@@ -1,35 +1,36 @@
 {
   "format": 1,
   "restore": {
-    "C:\\GunfireRebornCode\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj": {}
+    "D:\\bHaptics\\Gunfire Reborn\\dev\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj": {}
   },
   "projects": {
-    "C:\\GunfireRebornCode\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj": {
+    "D:\\bHaptics\\Gunfire Reborn\\dev\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\GunfireRebornCode\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj",
+        "projectUniqueName": "D:\\bHaptics\\Gunfire Reborn\\dev\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj",
         "projectName": "GunfireRebornBhaptics",
-        "projectPath": "C:\\GunfireRebornCode\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj",
-        "packagesPath": "C:\\Users\\Lance\\.nuget\\packages\\",
-        "outputPath": "C:\\GunfireRebornCode\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\obj\\",
+        "projectPath": "D:\\bHaptics\\Gunfire Reborn\\dev\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj",
+        "packagesPath": "C:\\Users\\astie\\.nuget\\packages\\",
+        "outputPath": "D:\\bHaptics\\Gunfire Reborn\\dev\\GunfireRebornBhaptics\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Lance\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\astie\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net35"
+          "net472"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net35": {
-            "targetAlias": "net35",
+          "net472": {
+            "targetAlias": "net472",
             "projectReferences": {}
           }
         },
@@ -40,16 +41,16 @@
         }
       },
       "frameworks": {
-        "net35": {
-          "targetAlias": "net35",
+        "net472": {
+          "targetAlias": "net472",
           "dependencies": {
             "Microsoft.NETFramework.ReferenceAssemblies": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[1.0.2, )"
+              "version": "[1.0.3, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }
