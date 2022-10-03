@@ -4,8 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using Bhaptics.Tact;
-using Compound_bhaptics;
 using UnityEngine;
+using GunfireRebornBhaptics;
 
 namespace MyBhapticsTactsuit
 {
@@ -43,7 +43,7 @@ namespace MyBhapticsTactsuit
             try
             {
 #pragma warning disable CS0618 // remove warning that the C# library is deprecated
-                hapticPlayer = new HapticPlayer("Compound_bhaptics", "Compound_bhaptics");
+                hapticPlayer = new HapticPlayer("GunfireRebornBhaptics", "GunfireRebornBhaptics");
 #pragma warning restore CS0618
                 suitDisabled = false;
             }
@@ -56,7 +56,7 @@ namespace MyBhapticsTactsuit
 
         public void LOG(string logStr)
         {
-            Plugin.Log.LogMessage(logStr);
+            //GunfireRebornBhaptics.Log.LogMessage(logStr);
         }
 
 
