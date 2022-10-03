@@ -400,3 +400,6 @@ FodyWeavers.xsd
 
 #common libraries not commited
 .libs/
+
+#visual studios folders
+./GunfireRebornBhaptics/obj
