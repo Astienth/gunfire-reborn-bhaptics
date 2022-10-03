@@ -56,7 +56,7 @@ namespace MyBhapticsTactsuit
 
         public void LOG(string logStr)
         {
-            //GunfireRebornBhaptics.Log.LogMessage(logStr);
+            Plugin.Log.LogMessage(logStr);
         }
 
 
