@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "L84PKK2aPrAcN8HQNTdhIVcv/4KSnErFHeK9dUOtZ6knh19aM0p1UWPTQh/MoETwewHLU3IaVime1syt5Y47Iw==",
+  "success": true,
+  "projectFilePath": "C:\\GunfireRebornCode\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics\\GunfireRebornBhaptics.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Lance\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.2\\microsoft.netframework.referenceassemblies.1.0.2.nupkg.sha512",
+    "C:\\Users\\Lance\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net35\\1.0.2\\microsoft.netframework.referenceassemblies.net35.1.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
