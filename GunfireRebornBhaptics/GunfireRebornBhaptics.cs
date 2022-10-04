@@ -40,29 +40,19 @@ namespace GunfireRebornBhaptics
         }
     }
 
-    /**[HarmonyPatch(typeof(HeroBeHitCtrl), "HeroHasHurt")]
-    public class bhaptics_OnHit
-    {
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            if (Plugin.tactsuitVr.suitDisabled)
-            {
-                return;
-            }
-            Plugin.tactsuitVr.PlaybackHaptics("Impact");
-        }
-    }**/
-
+    /**
+     * Can't find hit transform object, using static class
+     * as an ydrator or factory of some sort in the original code, ugly
+     */
     [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
     public class bhaptics_OnInjured
     {
         [HarmonyPostfix]
         public static void Postfix()
         {
-            PlayerProp player = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
-            Plugin.Log.LogMessage(" player " + player.ShootStatus);
-            Plugin.Log.LogMessage(" Transform " + HeroBeHitCtrl.DirHitTran.position);
+            //PlayerProp player = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
+            //Plugin.Log.LogMessage(" player " + player.ShootStatus);
+            //Plugin.Log.LogMessage(" Transform " + HeroBeHitCtrl.DirHitTran.position);
             if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
@@ -70,5 +60,44 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("Impact");
         }
     }
+
+    #region guns
+
+    /**
+     * Many different classes for guns, not a single parent one.
+     * TODO : make an associative array with weapon id => tact pattern
+     */
+
+    [HarmonyPatch(typeof(ASBaseShoot), "OnReload")]
+    public class bhaptics_OnReload
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASBaseShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+        }
+    }
+
+    /**
+     * pistols and derivatives
+     */
+    [HarmonyPatch(typeof(ASAutoShoot), "AttackOnce")]
+    public class bhaptics_OnFire
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASAutoShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+        }
+    }
+    #endregion
 }
 
