@@ -32,6 +32,12 @@
       <HintPath>..\libs\Bhaptics.Tact.dll</HintPath>
       <CopyLocal>True</CopyLocal>
     </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>..\libs\Il2Cppmscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="UnhollowerBaseLib">
+      <HintPath>..\libs\UnhollowerBaseLib.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\libs\UnityEngine.dll</HintPath>
       <CopyLocal>False</CopyLocal>
