@@ -40,7 +40,7 @@ namespace GunfireRebornBhaptics
         }
     }
 
-    [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroHasHurt")]
+    /**[HarmonyPatch(typeof(HeroBeHitCtrl), "HeroHasHurt")]
     public class bhaptics_OnHit
     {
         [HarmonyPostfix]
@@ -52,20 +52,21 @@ namespace GunfireRebornBhaptics
             }
             Plugin.tactsuitVr.PlaybackHaptics("Impact");
         }
-    }
+    }**/
 
-    /**[HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
-    public class bhaptics_OnHit
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
+    public class bhaptics_OnInjured
     {
         [HarmonyPostfix]
         public static void Postfix()
         {
+            Plugin.Log.LogMessage(" heroID " + HeroBeHitCtrl.HeroID);
             if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("ImpactShort");
+            Plugin.tactsuitVr.PlaybackHaptics("Impact");
         }
-    }**/
+    }
 }
 

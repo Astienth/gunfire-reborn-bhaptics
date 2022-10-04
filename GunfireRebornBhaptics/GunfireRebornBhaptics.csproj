@@ -20,6 +20,9 @@
       <HintPath>..\libs\Assembly-CSharp.dll</HintPath>
       <CopyLocal>False</CopyLocal>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\libs\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx.Core">
       <HintPath>..\libs\BepInEx.Core.dll</HintPath>
       <CopyLocal>False</CopyLocal>
