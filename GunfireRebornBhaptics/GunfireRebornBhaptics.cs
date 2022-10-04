@@ -60,7 +60,9 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
-            Plugin.Log.LogMessage(" heroID " + HeroBeHitCtrl.HeroID);
+            PlayerProp player = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
+            Plugin.Log.LogMessage(" player " + player.ShootStatus);
+            Plugin.Log.LogMessage(" Transform " + HeroBeHitCtrl.DirHitTran.position);
             if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
