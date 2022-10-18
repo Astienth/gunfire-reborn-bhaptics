@@ -8,8 +8,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <DebugType>none</DebugType>
-    <BaseOutputPath>D:\bHaptics\Gunfire Reborn\dev\GunfireRebornBhaptics\bin</BaseOutputPath>
+    <BaseOutputPath>C:\GunfireReborn\Dev</BaseOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GunfireRebornBhaptics.cs" />
+    <Compile Include="MyBhapticsTactsuit.cs" />
+  </ItemGroup>
   
   <ItemGroup>
     <Reference Include="0Harmony">

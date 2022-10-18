@@ -86,7 +86,7 @@ namespace GunfireRebornBhaptics
      * pistols and derivatives
      */
     [HarmonyPatch(typeof(ASAutoShoot), "AttackOnce")]
-    public class bhaptics_OnFire
+    public class bhaptics_OnFireAutoShoot
     {
         [HarmonyPostfix]
         public static void Postfix(ASAutoShoot __instance)
@@ -96,8 +96,28 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
+
+    /**
+     * Single shot weapons (snipers, some bows) arms and vest 
+     */
+    [HarmonyPatch(typeof(ASSingleShoot), "AttackOnce")]
+    public class bhaptics_OnFireSingleShoot
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASSingleShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+        }
+    }
+    
     #endregion
 }
 
