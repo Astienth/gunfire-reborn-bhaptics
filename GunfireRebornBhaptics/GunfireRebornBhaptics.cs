@@ -79,6 +79,7 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
 
@@ -117,7 +118,44 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
-    
+
+    /**
+     * testing for charged attack once (charging vest, charging arm r) 
+     */
+    [HarmonyPatch(typeof(ASSingleChargeShoot), "ClearChargeAttack")]
+    public class bhaptics_OnFireSingleChargeShoot
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASSingleChargeShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest");
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_R");
+            Plugin.Log.LogMessage("ASSingleChargeShoot");
+        }
+    }
+
+
+    [HarmonyPatch(typeof(ASAutoChargeShoot), "ShootCanAttack")]
+    public class bhaptics_OnFireAutoChargeShoot
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASAutoChargeShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest");
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_R");
+            Plugin.Log.LogMessage("ASAutoChargeShoot");
+        }
+    }
+
+
     #endregion
 }
 
