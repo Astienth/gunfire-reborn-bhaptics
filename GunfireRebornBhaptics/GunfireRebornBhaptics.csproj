@@ -8,7 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <DebugType>none</DebugType>
-    <BaseOutputPath>D:\bHaptics\Gunfire Reborn\dev</BaseOutputPath>
+    <BaseOutputPath>C:\GunfireReborn\Dev</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
