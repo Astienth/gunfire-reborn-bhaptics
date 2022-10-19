@@ -17,6 +17,7 @@ namespace GunfireRebornBhaptics
         internal static new ManualLogSource Log;
 #pragma warning restore CS0109
         public static TactsuitVR tactsuitVr;
+        public static bool chargeWeaponCanShoot = false;
 
         public override void Load()
         {
@@ -132,7 +133,6 @@ namespace GunfireRebornBhaptics
             }
             Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest");
             Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_R");
-            Plugin.Log.LogMessage("ASSingleChargeShoot");
         }
     }
 
@@ -149,9 +149,9 @@ namespace GunfireRebornBhaptics
             }
             if (__result)
             {
-                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest");
-                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_R");
-                Plugin.Log.LogMessage("ASAutoChargeShoot");
+                Plugin.chargeWeaponCanShoot = true;
+                //start thread
+                Plugin.tactsuitVr.StartChargingWeapon();
             }
         }
     }
@@ -167,11 +167,15 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-           
+            if (Plugin.chargeWeaponCanShoot)
+            {
+                Plugin.chargeWeaponCanShoot = false;
+                //stop thread
+                Plugin.tactsuitVr.StopChargingWeapon();
+
                 Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease");
                 Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease_RT");
-                Plugin.Log.LogMessage("ASAutoChargeShoot");
-           
+            }
         }
     }
 

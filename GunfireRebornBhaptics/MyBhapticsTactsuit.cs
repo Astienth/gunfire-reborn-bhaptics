@@ -15,7 +15,8 @@ namespace MyBhapticsTactsuit
         public bool suitDisabled = true;
         public bool systemInitialized = false;
         // Event to start and stop the heartbeat thread
-        private static ManualResetEvent HeartBeat_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent HeartBeat_mrse = new ManualResetEvent(false); 
+        private static ManualResetEvent ChargingWeapon_mrse = new ManualResetEvent(false);
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
 
@@ -24,17 +25,6 @@ namespace MyBhapticsTactsuit
 #pragma warning restore CS0618 
 
         private static RotationOption defaultRotationOption = new RotationOption(0.0f, 0.0f);
-
-        public void HeartBeatFunc()
-        {
-            while (true)
-            {
-                // Check if reset event is active
-                HeartBeat_mrse.WaitOne();
-                PlaybackHaptics("HeartBeat");
-                Thread.Sleep(1000);
-            }
-        }
 
         public TactsuitVR()
         {
@@ -52,6 +42,8 @@ namespace MyBhapticsTactsuit
             LOG("Starting HeartBeat thread...");
             Thread HeartBeatThread = new Thread(HeartBeatFunc);
             HeartBeatThread.Start();
+            Thread ChargingWeaponThread = new Thread(ChargingWeapon);
+            ChargingWeaponThread.Start();
         }
 
         public void LOG(string logStr)
@@ -162,6 +154,17 @@ namespace MyBhapticsTactsuit
             return new KeyValuePair<float, float>(myRotation, hitShift);
         }
 
+        public void HeartBeatFunc()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                HeartBeat_mrse.WaitOne();
+                PlaybackHaptics("HeartBeat");
+                Thread.Sleep(1000);
+            }
+        }
+
         public void StartHeartBeat()
         {
             HeartBeat_mrse.Set();
@@ -170,6 +173,29 @@ namespace MyBhapticsTactsuit
         public void StopHeartBeat()
         {
             HeartBeat_mrse.Reset();
+        }
+
+        public void ChargingWeapon()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                ChargingWeapon_mrse.WaitOne();
+                PlaybackHaptics("ChargedShotVest", true, 0.3f);
+                PlaybackHaptics("ChargedShotArm_R", true, 0.4f);
+                Thread.Sleep(1000); 
+            }
+        }
+
+        public void StartChargingWeapon()
+        {
+            ChargingWeapon_mrse.Set();
+        }
+
+        public void StopChargingWeapon()
+        {
+            ChargingWeapon_mrse.Reset();
+            ChargingWeapon_mrse.Reset();
         }
 
         public void StopHapticFeedback(String effect)
