@@ -78,7 +78,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
@@ -154,7 +153,6 @@ namespace GunfireRebornBhaptics
             Plugin.Log.LogMessage("ASAutoChargeShoot");
         }
     }
-
 
     #endregion
 }
