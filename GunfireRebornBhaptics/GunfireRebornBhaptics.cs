@@ -18,7 +18,6 @@ namespace GunfireRebornBhaptics
 #pragma warning restore CS0109
         public static TactsuitVR tactsuitVr;
 
-
         public override void Load()
         {
             // Make my own logger so it can be accessed from the Tactsuit class
@@ -142,15 +141,37 @@ namespace GunfireRebornBhaptics
     public class bhaptics_OnFireAutoChargeShoot
     {
         [HarmonyPostfix]
+        public static void Postfix(ASAutoChargeShoot __instance, bool __result)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            if (__result)
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest");
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_R");
+                Plugin.Log.LogMessage("ASAutoChargeShoot");
+            }
+        }
+    }
+
+
+    [HarmonyPatch(typeof(ASAutoChargeShoot), "OnUp")]
+    public class bhaptics_OnChargingRelease
+    {
+        [HarmonyPostfix]
         public static void Postfix(ASAutoChargeShoot __instance)
         {
             if (Plugin.tactsuitVr.suitDisabled || __instance == null)
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest");
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_R");
-            Plugin.Log.LogMessage("ASAutoChargeShoot");
+           
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease");
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease_RT");
+                Plugin.Log.LogMessage("ASAutoChargeShoot");
+           
         }
     }
 
