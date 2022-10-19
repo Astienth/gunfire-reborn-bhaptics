@@ -179,6 +179,21 @@ namespace GunfireRebornBhaptics
         }
     }
 
+    [HarmonyPatch(typeof(ASContinueShoot), "AttackOnce")]
+    public class bhaptics_OnContinueShoot
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASContinueShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+        }
+    }
+
     #endregion
 }
 
