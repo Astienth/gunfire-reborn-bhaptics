@@ -232,8 +232,8 @@ namespace GunfireRebornBhaptics
 
     /**
      * When Shield breaks
-     */
-    [HarmonyPatch(typeof(HeroBeHitCtrl), "ClearArmorHub")]
+     
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroHasHurt")]
     public class bhaptics_OnShieldBreak
     {
         [HarmonyPostfix]
@@ -247,7 +247,7 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("HeartBeat");
         }
     }
-
+    */
     /**
      * Can't find hit transform object, using static class
      * as an gydrator or factory of some sort in the original code, ugly
