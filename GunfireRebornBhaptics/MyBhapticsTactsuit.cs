@@ -17,6 +17,7 @@ namespace MyBhapticsTactsuit
         // Event to start and stop the heartbeat thread
         private static ManualResetEvent HeartBeat_mrse = new ManualResetEvent(false); 
         private static ManualResetEvent ChargingWeapon_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent ContinueWeapon_mrse = new ManualResetEvent(false);
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
 
@@ -44,6 +45,8 @@ namespace MyBhapticsTactsuit
             HeartBeatThread.Start();
             Thread ChargingWeaponThread = new Thread(ChargingWeapon);
             ChargingWeaponThread.Start();
+            Thread ContinueWeaponThread = new Thread(ContinueWeapon);
+            ContinueWeaponThread.Start();
         }
 
         public void LOG(string logStr)
@@ -88,7 +91,7 @@ namespace MyBhapticsTactsuit
             if (FeedbackMap.ContainsKey(key))
             {
                 ScaleOption scaleOption = new ScaleOption(intensity, duration);
-                if (hapticPlayer.IsPlaying() && !forced)
+                if (hapticPlayer.IsPlaying(key) && !forced)
                 {
                     return;
                 }
@@ -195,7 +198,30 @@ namespace MyBhapticsTactsuit
         public void StopChargingWeapon()
         {
             ChargingWeapon_mrse.Reset();
-            ChargingWeapon_mrse.Reset();
+        }
+
+        public void ContinueWeapon()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                ContinueWeapon_mrse.WaitOne();
+                PlaybackHaptics("RecoilVestContinue_R");
+                PlaybackHaptics("ChargedShotArm_R", true, 0.4f);
+                Thread.Sleep(400);
+            }
+        }
+
+        public void StartContinueWeapon()
+        {
+            ContinueWeapon_mrse.Set();
+        }
+
+        public void StopContinueWeapon()
+        {
+            hapticPlayer.TurnOff("RecoilVestContinue_R");
+            hapticPlayer.TurnOff("ChargedShotArm_R");
+            ContinueWeapon_mrse.Reset();
         }
 
         public void StopHapticFeedback(String effect)

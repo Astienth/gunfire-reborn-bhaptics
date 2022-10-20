@@ -16,8 +16,9 @@ namespace GunfireRebornBhaptics
 #pragma warning disable CS0109 // Remove unnecessary warning
         internal static new ManualLogSource Log;
 #pragma warning restore CS0109
-        public static TactsuitVR tactsuitVr;
-        public static bool chargeWeaponCanShoot = false;
+        public static TactsuitVR tactsuitVr; 
+        public static bool chargeWeaponCanShoot = false; 
+        public static bool continueWeaponCanShoot = false;
 
         public override void Load()
         {
@@ -179,7 +180,7 @@ namespace GunfireRebornBhaptics
         }
     }
 
-    [HarmonyPatch(typeof(ASContinueShoot), "AttackOnce")]
+    [HarmonyPatch(typeof(ASContinueShoot), "StartBulletSkill")]
     public class bhaptics_OnContinueShoot
     {
         [HarmonyPostfix]
@@ -189,8 +190,28 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            Plugin.continueWeaponCanShoot = true;
+            //start thread
+            Plugin.tactsuitVr.StartContinueWeapon();
+        }
+    }
+
+    [HarmonyPatch(typeof(ASContinueShoot), "EndContinueAttack")]
+    public class bhaptics_OnContinueStop
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASContinueShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            if (Plugin.continueWeaponCanShoot)
+            {
+                Plugin.continueWeaponCanShoot = false;
+                //stop thread
+                Plugin.tactsuitVr.StopContinueWeapon();
+            }
         }
     }
 
