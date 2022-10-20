@@ -232,7 +232,7 @@ namespace GunfireRebornBhaptics
 
     /**
      * When Shield breaks
-     */
+     
     [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroHasHurt")]
     public class bhaptics_OnShieldBreak
     {
@@ -247,6 +247,7 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
         }
     }
+    */
 
     /**
      * Can't find hit transform object, using static class
