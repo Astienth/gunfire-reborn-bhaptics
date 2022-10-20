@@ -206,6 +206,7 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 ContinueWeapon_mrse.WaitOne();
+                // LANCE PATTERNS HERE
                 PlaybackHaptics("RecoilVestContinue_R");
                 PlaybackHaptics("ChargedShotArm_R", true, 0.4f);
                 Thread.Sleep(400);
@@ -219,14 +220,11 @@ namespace MyBhapticsTactsuit
 
         public void StopContinueWeapon()
         {
-            StopHapticFeedback("RecoilVestContinue_R");
-            StopHapticFeedback("ChargedShotArm_R");
             ContinueWeapon_mrse.Reset();
         }
 
         public void StopHapticFeedback(String effect)
         {
-            LOG(effect+" "+hapticPlayer.IsPlaying(effect).ToString());
             hapticPlayer.TurnOff(effect);
         }
 

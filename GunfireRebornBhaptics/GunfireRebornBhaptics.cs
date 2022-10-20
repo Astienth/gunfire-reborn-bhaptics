@@ -43,7 +43,7 @@ namespace GunfireRebornBhaptics
 
     /**
      * Can't find hit transform object, using static class
-     * as an ydrator or factory of some sort in the original code, ugly
+     * as an gydrator or factory of some sort in the original code, ugly
      */
     [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
     public class bhaptics_OnInjured
@@ -66,7 +66,7 @@ namespace GunfireRebornBhaptics
 
     /**
      * Many different classes for guns, not a single parent one.
-     * TODO : make an associative array with weapon id => tact pattern
+     * TODO : make an associative array with weapon id => tact pattern ?
      */
 
     [HarmonyPatch(typeof(ASBaseShoot), "OnReload")]
@@ -97,7 +97,6 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.StopHapticFeedback("RecoilVest_R");
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
@@ -138,7 +137,9 @@ namespace GunfireRebornBhaptics
         }
     }
 
-
+    /**
+     * Charging weapons effect when charging
+     */
     [HarmonyPatch(typeof(ASAutoChargeShoot), "ShootCanAttack")]
     public class bhaptics_OnFireAutoChargeShoot
     {
@@ -158,7 +159,9 @@ namespace GunfireRebornBhaptics
         }
     }
 
-
+    /**
+     * Charging weapons post charging release
+     */
     [HarmonyPatch(typeof(ASAutoChargeShoot), "OnUp")]
     public class bhaptics_OnChargingRelease
     {
@@ -181,6 +184,9 @@ namespace GunfireRebornBhaptics
         }
     }
 
+    /**
+     * Continue shoot weapons when activating
+     */
     [HarmonyPatch(typeof(ASContinueShoot), "StartBulletSkill")]
     public class bhaptics_OnContinueShoot
     {
@@ -197,6 +203,9 @@ namespace GunfireRebornBhaptics
         }
     }
 
+    /**
+     * Continue shoot weapons when stop firing
+     */
     [HarmonyPatch(typeof(ASContinueShoot), "EndContinueAttack")]
     public class bhaptics_OnContinueStop
     {
@@ -217,5 +226,26 @@ namespace GunfireRebornBhaptics
     }
 
     #endregion
+
+
+    /**
+     * DEBUG
+     */
+    [HarmonyPatch(typeof(Bhaptics.Tact.HapticPlayer), "TurnOff", new Type[] { typeof(string) })]
+    public class bhaptics_OnDebug
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Bhaptics.Tact.HapticPlayer __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+
+            Plugin.Log.LogMessage(
+                string.Join(" ",
+                string.Join(" ", Traverse.Create(__instance).Field("_activeKeys").GetValue())));
+        }
+    }
 }
 
