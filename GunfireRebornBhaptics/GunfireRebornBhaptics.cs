@@ -41,27 +41,6 @@ namespace GunfireRebornBhaptics
         }
     }
 
-    /**
-     * Can't find hit transform object, using static class
-     * as an gydrator or factory of some sort in the original code, ugly
-     */
-    [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
-    public class bhaptics_OnInjured
-    {
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            //PlayerProp player = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
-            //Plugin.Log.LogMessage(" player " + player.ShootStatus);
-            //Plugin.Log.LogMessage(" Transform " + HeroBeHitCtrl.DirHitTran.position);
-            if (Plugin.tactsuitVr.suitDisabled)
-            {
-                return;
-            }
-            Plugin.tactsuitVr.PlaybackHaptics("Impact");
-        }
-    }
-
     #region guns
 
     /**
@@ -227,6 +206,72 @@ namespace GunfireRebornBhaptics
 
     #endregion
 
+    #region Moves
+
+    /**
+     * After jumps when touching floor
+     
+    [HarmonyPatch(typeof(), "", new Type[] { typeof() })]
+    public class bhaptics_OnLanding
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease");
+        }
+    }
+    */
+
+    #endregion
+
+    #region Health and shield
+
+    /**
+     * When Shield breaks
+     */
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "ClearArmorHub")]
+    public class bhaptics_OnShieldBreak
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.Log.LogMessage(" BREAK " + HeroBeHitCtrl.ArmorBreak);
+            Plugin.tactsuitVr.PlaybackHaptics("HeartBeat");
+        }
+    }
+
+    /**
+     * Can't find hit transform object, using static class
+     * as an gydrator or factory of some sort in the original code, ugly
+     */
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
+    public class bhaptics_OnInjured
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            //PlayerProp player = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
+            //Plugin.Log.LogMessage(" player " + player.ShootStatus);
+            //Plugin.Log.LogMessage(" Transform " + HeroBeHitCtrl.DirHitTran.position);
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("Impact");
+        }
+    }
+
+    #endregion
+
+    #region
 
     /**
      * DEBUG
@@ -247,5 +292,6 @@ namespace GunfireRebornBhaptics
                 string.Join(" ", Traverse.Create(__instance).Field("_activeKeys").GetValue())));
         }
     }
+    #endregion
 }
 
