@@ -206,9 +206,8 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 ContinueWeapon_mrse.WaitOne();
-                // LANCE PATTERNS HERE
-                PlaybackHaptics("RecoilVestContinue_R");
-                PlaybackHaptics("ChargedShotArm_R", true, 0.4f);
+                PlaybackHaptics("ContinuousVest");
+                PlaybackHaptics("ContinuousArmR");
                 Thread.Sleep(400);
             }
         }
