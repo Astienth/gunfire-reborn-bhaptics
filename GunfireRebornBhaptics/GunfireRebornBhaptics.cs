@@ -97,6 +97,7 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.StopHapticFeedback("RecoilVest_R");
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
