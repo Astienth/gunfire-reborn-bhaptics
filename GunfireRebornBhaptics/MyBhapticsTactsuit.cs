@@ -219,13 +219,14 @@ namespace MyBhapticsTactsuit
 
         public void StopContinueWeapon()
         {
-            hapticPlayer.TurnOff("RecoilVestContinue_R");
-            hapticPlayer.TurnOff("ChargedShotArm_R");
+            StopHapticFeedback("RecoilVestContinue_R");
+            StopHapticFeedback("ChargedShotArm_R");
             ContinueWeapon_mrse.Reset();
         }
 
         public void StopHapticFeedback(String effect)
         {
+            LOG(effect+" "+hapticPlayer.IsPlaying(effect).ToString());
             hapticPlayer.TurnOff(effect);
         }
 
