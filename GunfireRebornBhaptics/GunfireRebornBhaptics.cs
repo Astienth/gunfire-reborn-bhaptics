@@ -207,8 +207,23 @@ namespace GunfireRebornBhaptics
     /**
      * DownUpShoot (Wild hunt) arms and vest 
      */
-    [HarmonyPatch(typeof(ASDownUpShoot), "AttackOnce")]
-    public class bhaptics_OnFireDownUpShoot
+    [HarmonyPatch(typeof(ASDownUpShoot), "OnUp")]
+    public class bhaptics_OnFireDownUpShootUp
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASDownUpShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+        }
+    }
+
+    [HarmonyPatch(typeof(ASDownUpShoot), "OnDown")]
+    public class bhaptics_OnFireDownUpShootDown
     {
         [HarmonyPostfix]
         public static void Postfix(ASDownUpShoot __instance)
