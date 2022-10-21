@@ -204,6 +204,24 @@ namespace GunfireRebornBhaptics
         }
     }
 
+    /**
+     * DownUpShoot (Wild hunt) arms and vest 
+     */
+    [HarmonyPatch(typeof(ASDownUpShoot), "AttackOnce")]
+    public class bhaptics_OnFireDownUpShoot
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASDownUpShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+        }
+    }
+
     #endregion
 
     #region Moves
@@ -303,6 +321,8 @@ namespace GunfireRebornBhaptics
                 string.Join(" ", Traverse.Create(__instance).Field("_activeKeys").GetValue())));
         }
     }
+
+
     #endregion
 }
 
