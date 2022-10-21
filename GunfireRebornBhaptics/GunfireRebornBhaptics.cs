@@ -58,7 +58,10 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            if (__instance.ReloadComponent.m_IsReload)
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            }
         }
     }
 
@@ -217,6 +220,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+
+            Plugin.Log.LogMessage("RELOADED "+ __instance.ReloadComponent.m_IsReload);
+
             Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
@@ -232,6 +238,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+
+            Plugin.Log.LogMessage("BULLET " + __instance.bulletuse);
+
             Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
