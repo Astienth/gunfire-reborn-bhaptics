@@ -46,7 +46,7 @@ namespace GunfireRebornBhaptics
     /**
      * Many different classes for guns, not a single parent one.
      * TODO : make an associative array with weapon id => tact pattern ?
-     */
+    
 
     [HarmonyPatch(typeof(ASBaseShoot), "OnReload")]
     public class bhaptics_OnReload
@@ -61,6 +61,7 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
+     */
 
     /**
      * pistols and derivatives
