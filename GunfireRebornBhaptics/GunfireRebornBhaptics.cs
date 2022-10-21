@@ -232,8 +232,8 @@ namespace GunfireRebornBhaptics
 
     /**
      * When Shield breaks
-     
-    [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroHasHurt")]
+     */
+    [HarmonyPatch(typeof(BoltBehavior.CAction46), "Action")]
     public class bhaptics_OnShieldBreak
     {
         [HarmonyPostfix]
@@ -243,11 +243,10 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage(" BREAK " + HeroBeHitCtrl.ArmorBreak);
+
             Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
         }
     }
-    */
 
     /**
      * Can't find hit transform object, using static class
@@ -259,9 +258,6 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
-            //PlayerProp player = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
-            //Plugin.Log.LogMessage(" player " + player.ShootStatus);
-            //Plugin.Log.LogMessage(" Transform " + HeroBeHitCtrl.DirHitTran.position);
             if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
@@ -287,6 +283,20 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+
+            /**
+            PlayerProp playerProp = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
+
+            Plugin.Log.LogMessage(" SHIELD MAX " + playerProp.ShieldMax);
+            Plugin.Log.LogMessage(" NAME " + playerProp.Name);
+            Plugin.Log.LogMessage(" HP " + playerProp.HP);
+            Plugin.Log.LogMessage(" HPMAX " + playerProp.HPMax);
+            Plugin.Log.LogMessage(" ARMOR " + playerProp.Armor);
+            Plugin.Log.LogMessage(" ARMORMAX " + playerProp.ArmorMax);
+            Plugin.Log.LogMessage(" SHield " + playerProp.Shield);
+            Plugin.Log.LogMessage(" STATUS " + playerProp.ShieldStatus);
+            Plugin.Log.LogMessage(" BREAK TIMER " + HeroBeHitCtrl.breakTimer);
+            */
 
             Plugin.Log.LogMessage(
                 string.Join(" ",
