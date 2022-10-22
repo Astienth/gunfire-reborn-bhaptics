@@ -247,8 +247,8 @@ namespace GunfireRebornBhaptics
 
     /**
      * After jumps when touching floor
-     
-    [HarmonyPatch(typeof(), "", new Type[] { typeof() })]
+     */
+    [HarmonyPatch(typeof(HeroMoveManager), "OnLand")]
     public class bhaptics_OnLanding
     {
         [HarmonyPostfix]
@@ -258,10 +258,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease");
+            Plugin.tactsuitVr.PlaybackHaptics("LandAfterJump", true, 0.2f);
         }
     }
-    */
 
     #endregion
 
