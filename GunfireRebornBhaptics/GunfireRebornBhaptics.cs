@@ -284,6 +284,61 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
         }
     }
+    /**
+     * When Armor breaks
+     */
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "ClearArmorHub")]
+    public class bhaptics_OnArmorBreak
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
+        }
+    }
+    
+    /**
+     * When low health starts
+     */
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "PlayLowHpAndShield")]
+    public class bhaptics_OnLowHealthStart
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            if (HeroBeHitCtrl.NearlyDeadAction != -1)
+            {
+                Plugin.tactsuitVr.StartHeartBeat();
+            }
+        }
+    }
+    
+    /**
+     * When low hp stops
+     */
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "DelLowHpAndShield")]
+    public class bhaptics_OnLowHealthStop
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
 
     /**
      * Can't find hit transform object, using static class
