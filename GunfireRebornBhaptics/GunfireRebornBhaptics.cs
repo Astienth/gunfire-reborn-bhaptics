@@ -327,6 +327,8 @@ namespace GunfireRebornBhaptics
      * as an gydrator or factory of some sort in the original code, ugly
      * 
      * Use this function as well for geros with armor instead of shield
+     * 
+     * Death effect
      */
     [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
     public class bhaptics_OnInjured
@@ -344,6 +346,11 @@ namespace GunfireRebornBhaptics
             if (playerProp.ArmorMax > 0 &&  playerProp.Armor <= 0)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
+            }
+            //death
+            if (playerProp.HP <= 0)
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("Death");
             }
         }
     }
