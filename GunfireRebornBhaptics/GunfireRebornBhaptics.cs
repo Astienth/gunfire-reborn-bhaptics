@@ -393,7 +393,6 @@ namespace GunfireRebornBhaptics
         }
     }
 
-
     #endregion
 }
 
