@@ -284,23 +284,6 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
         }
     }
-    /**
-     * When Armor breaks
-     */
-    [HarmonyPatch(typeof(HeroBeHitCtrl), "ClearArmorHub")]
-    public class bhaptics_OnArmorBreak
-    {
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            if (Plugin.tactsuitVr.suitDisabled)
-            {
-                return;
-            }
-
-            Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
-        }
-    }
     
     /**
      * When low health starts
@@ -343,6 +326,8 @@ namespace GunfireRebornBhaptics
     /**
      * Can't find hit transform object, using static class
      * as an gydrator or factory of some sort in the original code, ugly
+     * 
+     * Use this function as well for geros with armor instead of shield
      */
     [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
     public class bhaptics_OnInjured
@@ -355,6 +340,12 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("Impact");
+            //armor break for heros with armor and no shield
+            PlayerProp playerProp = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
+            if (playerProp.ArmorMax > 0 &&  playerProp.Armor <= 0)
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
+            }
         }
     }
 
