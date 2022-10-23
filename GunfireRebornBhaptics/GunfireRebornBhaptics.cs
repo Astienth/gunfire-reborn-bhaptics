@@ -350,8 +350,81 @@ namespace GunfireRebornBhaptics
             //death
             if (playerProp.HP <= 0)
             {
+                // TODO LANCE PATTERN DEATH
+
                 Plugin.tactsuitVr.PlaybackHaptics("Death");
+                Plugin.tactsuitVr.StartHeartBeat();
             }
+        }
+    }
+
+    /**
+     * When player is gives up after death
+     */
+    [HarmonyPatch(typeof(Guide.SpeCGDie), "GiveUp")]
+    public class bhaptics_OnGiveUp
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.Log.LogMessage("GiveUp");
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
+
+    /**
+     * When player is NOT back to life, stop heartbeat
+     */
+    [HarmonyPatch(typeof(SalvationManager), "AskEnterWatch")]
+    public class bhaptics_OnNotRevived
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.Log.LogMessage("AskEnterWatch");
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
+
+    /**
+     * When player is back to life, stop heartbeat
+     */
+    [HarmonyPatch(typeof(NewPlayerManager), "PlayerRelife")]
+    public class bhaptics_OnBackToLife
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
+
+    /**
+     * When healing item used
+     */
+    [HarmonyPatch(typeof(SkillBolt.CAction1801), "Action")]
+    public class bhaptics_OnHealing
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("Heal");
         }
     }
 
