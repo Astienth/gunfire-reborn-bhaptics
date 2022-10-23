@@ -414,7 +414,7 @@ namespace GunfireRebornBhaptics
     /**
      * When healing item used
      */
-    [HarmonyPatch(typeof(SkillBolt.CAction1801), "Action")]
+    [HarmonyPatch(typeof(BoltBehavior.CAction1069), "Action")]
     public class bhaptics_OnHealing
     {
         [HarmonyPostfix]
@@ -424,7 +424,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            // TODO ONly for local player not when other players heal themselves
             Plugin.tactsuitVr.PlaybackHaptics("Heal");
         }
     }
