@@ -359,7 +359,7 @@ namespace GunfireRebornBhaptics
     }
 
     /**
-     * When player is gives up after death
+     * When player gives up after death
      */
     [HarmonyPatch(typeof(Guide.SpeCGDie), "GiveUp")]
     public class bhaptics_OnGiveUp
@@ -424,6 +424,7 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+            // TODO ONly for local player not when other players heal themselves
             Plugin.tactsuitVr.PlaybackHaptics("Heal");
         }
     }
