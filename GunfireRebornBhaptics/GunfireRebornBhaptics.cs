@@ -261,6 +261,23 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("LandAfterJump", true, 0.2f);
         }
     }
+    
+    /**
+     * On Dashing
+     */
+    [HarmonyPatch(typeof(SkillBolt.CAction1310), "Action")]
+    public class bhaptics_OnDashing
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("Dash");
+        }
+    }
 
     #endregion
 
@@ -371,6 +388,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+
+            //TODO TEST, this is NOT WORKING
+
             Plugin.Log.LogMessage("GiveUp");
             Plugin.tactsuitVr.StopHeartBeat();
         }
