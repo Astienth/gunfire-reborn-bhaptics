@@ -258,13 +258,14 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("LandAfterJump", true, 0.2f);
+            Plugin.tactsuitVr.PlaybackHaptics("LandAfterJump", true, 0.3f);
         }
     }
     
     /**
      * On Dashing
      */
+    /*
     [HarmonyPatch(typeof(SkillBolt.CAction1310), "Action")]
     public class bhaptics_OnDashing
     {
@@ -278,6 +279,7 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("Dash");
         }
     }
+    */
 
     #endregion
 
