@@ -408,7 +408,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("AskEnterWatch");
             Plugin.tactsuitVr.StopHeartBeat();
         }
     }
