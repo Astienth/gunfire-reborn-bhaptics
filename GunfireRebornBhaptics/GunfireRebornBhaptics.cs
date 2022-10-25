@@ -247,8 +247,8 @@ namespace GunfireRebornBhaptics
 
     /**
      * After jumps when touching floor
-     
-    [HarmonyPatch(typeof(), "", new Type[] { typeof() })]
+     */
+    [HarmonyPatch(typeof(HeroMoveManager), "OnLand")]
     public class bhaptics_OnLanding
     {
         [HarmonyPostfix]
@@ -258,10 +258,29 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease");
+            Plugin.tactsuitVr.PlaybackHaptics("LandAfterJump", true, 0.3f);
         }
     }
-    */
+    
+    /**
+     * On Dashing
+     */
+    [HarmonyPatch(typeof(SkillBolt.CAction1310), "Action")]
+    public class bhaptics_OnDashing
+    {
+        [HarmonyPostfix]
+        public static void Postfix(SkillBolt.CSkillBase skill)
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            if (SkillBolt.CServerArg.IsHeroCtrl(skill))
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("Dash");
+            }
+        }
+    }
 
     #endregion
 
@@ -284,10 +303,52 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
         }
     }
+    
+    /**
+     * When low health starts
+     */
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "PlayLowHpAndShield")]
+    public class bhaptics_OnLowHealthStart
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            if (HeroBeHitCtrl.NearlyDeadAction != -1)
+            {
+                Plugin.tactsuitVr.StartHeartBeat();
+            }
+        }
+    }
+    
+    /**
+     * When low hp stops
+     */
+    [HarmonyPatch(typeof(HeroBeHitCtrl), "DelLowHpAndShield")]
+    public class bhaptics_OnLowHealthStop
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
 
     /**
      * Can't find hit transform object, using static class
      * as an gydrator or factory of some sort in the original code, ugly
+     * 
+     * Use this function as well for geros with armor instead of shield
+     * 
+     * Death effect
      */
     [HarmonyPatch(typeof(HeroBeHitCtrl), "HeroInjured")]
     public class bhaptics_OnInjured
@@ -300,6 +361,89 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("Impact");
+            //armor break for heros with armor and no shield
+            PlayerProp playerProp = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
+            if (playerProp.ArmorMax > 0 &&  playerProp.Armor <= 0)
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("ShieldBreak");
+            }
+            //death
+            if (playerProp.HP <= 0)
+            {
+                // TODO LANCE PATTERN DEATH
+
+                Plugin.tactsuitVr.PlaybackHaptics("Death");
+                Plugin.tactsuitVr.StartHeartBeat();
+            }
+        }
+    }
+
+    /**
+     * When player gives up after death
+     */
+    [HarmonyPatch(typeof(UIScript.PCResurgencePanel_Logic), "GiveUp")]
+    public class bhaptics_OnGiveUp
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
+
+    /**
+     * When player is NOT back to life, stop heartbeat
+     */
+    [HarmonyPatch(typeof(SalvationManager), "AskEnterWatch")]
+    public class bhaptics_OnNotRevived
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.Log.LogMessage("AskEnterWatch");
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
+
+    /**
+     * When player is back to life, stop heartbeat
+     */
+    [HarmonyPatch(typeof(NewPlayerManager), "PlayerRelife")]
+    public class bhaptics_OnBackToLife
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
+
+    /**
+     * When healing item used
+     */
+    [HarmonyPatch(typeof(BoltBehavior.CAction1069), "Action")]
+    public class bhaptics_OnHealing
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("Heal");
         }
     }
 
@@ -340,7 +484,6 @@ namespace GunfireRebornBhaptics
                 string.Join(" ", Traverse.Create(__instance).Field("_activeKeys").GetValue())));
         }
     }
-
 
     #endregion
 }

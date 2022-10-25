@@ -21,6 +21,8 @@ namespace MyBhapticsTactsuit
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
 
+        public static bool heartbeatStarted = false;
+
 #pragma warning disable CS0618 // remove warning that the C# library is deprecated
         public HapticPlayer hapticPlayer;
 #pragma warning restore CS0618 
@@ -163,18 +165,23 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 HeartBeat_mrse.WaitOne();
-                PlaybackHaptics("HeartBeat");
+                PlaybackHaptics("HeartBeat", false, 1.5f);
                 Thread.Sleep(1000);
             }
         }
 
         public void StartHeartBeat()
         {
-            HeartBeat_mrse.Set();
+            if (!heartbeatStarted)
+            {
+                heartbeatStarted = true;
+                HeartBeat_mrse.Set();
+            }
         }
 
         public void StopHeartBeat()
         {
+            heartbeatStarted = false;
             HeartBeat_mrse.Reset();
         }
 
