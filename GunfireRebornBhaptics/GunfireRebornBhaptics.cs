@@ -265,21 +265,22 @@ namespace GunfireRebornBhaptics
     /**
      * On Dashing
      */
-    /*
     [HarmonyPatch(typeof(SkillBolt.CAction1310), "Action")]
     public class bhaptics_OnDashing
     {
         [HarmonyPostfix]
-        public static void Postfix()
+        public static void Postfix(SkillBolt.CSkillBase skill)
         {
             if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("Dash");
+            if (SkillBolt.CServerArg.IsHeroCtrl(skill))
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("Dash");
+            }
         }
     }
-    */
 
     #endregion
 
