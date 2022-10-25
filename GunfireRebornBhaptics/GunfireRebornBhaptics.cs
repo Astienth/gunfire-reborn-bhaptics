@@ -381,7 +381,7 @@ namespace GunfireRebornBhaptics
     /**
      * When player gives up after death
      */
-    [HarmonyPatch(typeof(Guide.SpeCGDie), "GiveUp")]
+    [HarmonyPatch(typeof(UIScript.PCResurgencePanel_Logic), "GiveUp")]
     public class bhaptics_OnGiveUp
     {
         [HarmonyPostfix]
@@ -391,10 +391,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-
-            //TODO TEST, this is NOT WORKING
-
-            Plugin.Log.LogMessage("GiveUp");
             Plugin.tactsuitVr.StopHeartBeat();
         }
     }
