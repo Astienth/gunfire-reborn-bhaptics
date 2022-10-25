@@ -242,6 +242,22 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
+    [HarmonyPatch(typeof(ASFlyswordShoot), "StartBulletSkill")]
+    public class bhaptics_OnFireFlySwordStart
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASFlyswordShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.Log.LogMessage("Cloud Weaver");
+            Plugin.tactsuitVr.PlaybackHaptics("FlySwordVest");
+            Plugin.tactsuitVr.PlaybackHaptics("FlySwordArmRWristSpinning");
+        }
+    }
+
     #endregion
 
     #region Moves
