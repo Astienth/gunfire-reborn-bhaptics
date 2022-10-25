@@ -242,6 +242,7 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
+    /*
     [HarmonyPatch(typeof(ASFlyswordShoot), "StartBulletSkill")]
     public class bhaptics_OnFireFlySwordStart
     {
@@ -253,11 +254,59 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.Log.LogMessage("Cloud Weaver");
+           // Plugin.tactsuitVr.PlaybackHaptics("FlySwordVest");
+           // Plugin.tactsuitVr.PlaybackHaptics("FlySwordArmRWristSpinning");
+        }
+    }
+    
+    [HarmonyPatch(typeof(ASFlyswordShoot), "FlyswordOnDown")]
+    public class bhaptics_OnFireFlySwordOnDown
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASFlyswordShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.Log.LogMessage("Cloud Weaver FlyswordOnDown");
             Plugin.tactsuitVr.PlaybackHaptics("FlySwordVest");
             Plugin.tactsuitVr.PlaybackHaptics("FlySwordArmRWristSpinning");
         }
     }
 
+    [HarmonyPatch(typeof(ASFlyswordShoot), "OnDown")]
+    public class bhaptics_OnFireFSOnDown
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASFlyswordShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.Log.LogMessage("Cloud Weaver FSOnDown");
+            Plugin.tactsuitVr.PlaybackHaptics("HeartBeat");
+            
+        }
+    }
+
+    [HarmonyPatch(typeof(ASFlyswordShoot), "OnUp")]
+    public class bhaptics_OnFireFSOnUp
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASFlyswordShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.Log.LogMessage("Cloud Weaver FSOnUp");
+            Plugin.tactsuitVr.PlaybackHaptics("Heal");
+
+        }
+    }
+    */
     #endregion
 
     #region Moves
