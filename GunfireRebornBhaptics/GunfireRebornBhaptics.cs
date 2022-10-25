@@ -58,6 +58,7 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+            Plugin.Log.LogMessage("Reload");
             if (__instance.ReloadComponent.m_IsReload)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
@@ -370,8 +371,7 @@ namespace GunfireRebornBhaptics
             //death
             if (playerProp.HP <= 0)
             {
-                // TODO LANCE PATTERN DEATH
-
+               
                 Plugin.tactsuitVr.PlaybackHaptics("Death");
                 Plugin.tactsuitVr.StartHeartBeat();
             }
