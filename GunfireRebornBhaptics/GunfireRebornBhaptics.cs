@@ -221,12 +221,11 @@ namespace GunfireRebornBhaptics
                 return;
             }
 
-            
             Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
-
+    
     [HarmonyPatch(typeof(ASDownUpShoot), "OnDown")]
     public class bhaptics_OnFireDownUpShootDown
     {
@@ -238,13 +237,10 @@ namespace GunfireRebornBhaptics
                 return;
             }
 
-            Plugin.Log.LogMessage("RELOADED " + __instance.ReloadComponent.m_IsReload);
-            
             Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
-
     #endregion
 
     #region Moves
