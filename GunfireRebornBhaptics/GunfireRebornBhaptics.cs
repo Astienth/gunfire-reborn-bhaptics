@@ -242,7 +242,9 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
-    /*
+    
+    // this method will activate feedback only when cloud weaver transitions from 1 sword held in hand (inactive state/entering new zones or switching to cloud weaver) to active state in which the 5 cloud weaver swords begin spinng around the wrist,
+    // this can only be activated by initiating sword spinning, it will not activate again until cloud weaver is inactive (new zone or switching) 
     [HarmonyPatch(typeof(ASFlyswordShoot), "StartBulletSkill")]
     public class bhaptics_OnFireFlySwordStart
     {
@@ -254,11 +256,12 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.Log.LogMessage("Cloud Weaver");
-           // Plugin.tactsuitVr.PlaybackHaptics("FlySwordVest");
-           // Plugin.tactsuitVr.PlaybackHaptics("FlySwordArmRWristSpinning");
+           Plugin.tactsuitVr.PlaybackHaptics("FlySwordVest");
+           Plugin.tactsuitVr.PlaybackHaptics("FlySwordArmRWristSpinning");
         }
     }
-    
+
+    // this method will activate feedback only while cloud weaver is actively hitting enemies, does not activate from any button presses, may be ideal to change from flyswordvest and flyswordarmwristspinning to recoil variants
     [HarmonyPatch(typeof(ASFlyswordShoot), "FlyswordOnDown")]
     public class bhaptics_OnFireFlySwordOnDown
     {
@@ -270,11 +273,13 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.Log.LogMessage("Cloud Weaver FlyswordOnDown");
-            Plugin.tactsuitVr.PlaybackHaptics("FlySwordVest");
-            Plugin.tactsuitVr.PlaybackHaptics("FlySwordArmRWristSpinning");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
+    
 
+    /* this method will activate haptic feedback "heartbeat" at every down press of Right trigger only.  This will activate without exception at every down press of right trigger including while there are no enemies present or with enemies present and being attacked.
     [HarmonyPatch(typeof(ASFlyswordShoot), "OnDown")]
     public class bhaptics_OnFireFSOnDown
     {
@@ -290,7 +295,11 @@ namespace GunfireRebornBhaptics
             
         }
     }
+    
 
+
+    /*
+     * this method activates haptic feedback, "heal" at every "on up" or release after pressing of buttons Y, X, and Right trigger only. This will persistently activate, even in menus.
     [HarmonyPatch(typeof(ASFlyswordShoot), "OnUp")]
     public class bhaptics_OnFireFSOnUp
     {
