@@ -459,6 +459,19 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.StopHeartBeat();
         }
     }
+    [HarmonyPatch(typeof(MainManager), "EndWar")]
+    public class bhaptics_OnEndWar
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.StopHeartBeat();
+        }
+    }
 
     /**
      * When player is NOT back to life, stop heartbeat
