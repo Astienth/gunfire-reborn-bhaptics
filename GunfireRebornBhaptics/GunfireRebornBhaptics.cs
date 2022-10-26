@@ -58,7 +58,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("Reload");
             if (__instance.ReloadComponent.m_IsReload)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
@@ -217,7 +216,8 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix(ASDownUpShoot __instance)
         {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null
+                || __instance.ReloadComponent.IsReload || __instance.ShootNum == 0)
             {
                 return;
             }
@@ -233,7 +233,8 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix(ASDownUpShoot __instance)
         {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null
+                || __instance.ReloadComponent.IsReload || __instance.ShootNum == 0)
             {
                 return;
             }
@@ -482,7 +483,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("AskEnterWatch");
             Plugin.tactsuitVr.StopHeartBeat();
         }
     }
