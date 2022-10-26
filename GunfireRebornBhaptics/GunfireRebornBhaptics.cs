@@ -58,7 +58,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("Reload");
             if (__instance.ReloadComponent.m_IsReload)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
@@ -217,7 +216,8 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix(ASDownUpShoot __instance)
         {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null
+                || __instance.ReloadComponent.IsReload || __instance.ShootNum == 0)
             {
                 return;
             }
@@ -233,7 +233,8 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix(ASDownUpShoot __instance)
         {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null
+                || __instance.ReloadComponent.IsReload || __instance.ShootNum == 0)
             {
                 return;
             }
@@ -448,19 +449,6 @@ namespace GunfireRebornBhaptics
      */
     [HarmonyPatch(typeof(UIScript.PCResurgencePanel_Logic), "GiveUp")]
     public class bhaptics_OnGiveUp
-    {
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            if (Plugin.tactsuitVr.suitDisabled)
-            {
-                return;
-            }
-            Plugin.tactsuitVr.StopHeartBeat();
-        }
-    }
-    [HarmonyPatch(typeof(MainManager), "EndWar")]
-    public class bhaptics_OnEndWar
     {
         [HarmonyPostfix]
         public static void Postfix()
