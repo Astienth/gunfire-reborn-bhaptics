@@ -18,6 +18,7 @@ namespace MyBhapticsTactsuit
         private static ManualResetEvent HeartBeat_mrse = new ManualResetEvent(false); 
         private static ManualResetEvent ChargingWeapon_mrse = new ManualResetEvent(false);
         private static ManualResetEvent ContinueWeapon_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent CloudWeaver_mrse = new ManualResetEvent(false);
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
 
@@ -49,6 +50,8 @@ namespace MyBhapticsTactsuit
             ChargingWeaponThread.Start();
             Thread ContinueWeaponThread = new Thread(ContinueWeapon);
             ContinueWeaponThread.Start();
+            Thread CloudWeaverThread = new Thread(CloudWeaver);
+            CloudWeaverThread.Start();
         }
 
         public void LOG(string logStr)
@@ -183,6 +186,30 @@ namespace MyBhapticsTactsuit
         {
             heartbeatStarted = false;
             HeartBeat_mrse.Reset();
+        }
+
+        public void CloudWeaver()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                CloudWeaver_mrse.WaitOne();
+                PlaybackHaptics("FlySwordVest");
+                PlaybackHaptics("FlySwordArmRWristSpinning");
+                Thread.Sleep(1000);
+            }
+        }
+
+        public void StartCloudWeaver()
+        {
+            
+            CloudWeaver_mrse.Set();
+            
+        }
+
+        public void StopCloudWeaver()
+        {
+             CloudWeaver_mrse.Reset();
         }
 
         public void ChargingWeapon()

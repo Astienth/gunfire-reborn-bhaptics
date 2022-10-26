@@ -257,8 +257,21 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.Log.LogMessage("Cloud Weaver");
-           Plugin.tactsuitVr.PlaybackHaptics("FlySwordVest");
-           Plugin.tactsuitVr.PlaybackHaptics("FlySwordArmRWristSpinning");
+            Plugin.tactsuitVr.StartCloudWeaver();
+        }
+    }
+
+    [HarmonyPatch(typeof(ASFlyswordShoot), "Destroy")]
+    public class bhaptics_OnFireFlySwordStopHaptics
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASFlyswordShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.StopCloudWeaver();
         }
     }
 
