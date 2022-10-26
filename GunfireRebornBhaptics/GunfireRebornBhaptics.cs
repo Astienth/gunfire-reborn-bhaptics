@@ -209,38 +209,24 @@ namespace GunfireRebornBhaptics
 
     /**
      * DownUpShoot (Wild hunt) arms and vest 
+     * using ASBaseShoot.StartBulletSkill to cover only the wildhunt itemID == 995
      */
-    [HarmonyPatch(typeof(ASDownUpShoot), "OnUp")]
-    public class bhaptics_OnFireDownUpShootUp
+    [HarmonyPatch(typeof(ASBaseShoot), "StartBulletSkill")]
+    public class bhaptics_OnFireDownUpShoot
     {
         [HarmonyPostfix]
-        public static void Postfix(ASDownUpShoot __instance)
+        public static void Postfix(ASBaseShoot __instance)
         {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null
-                || __instance.ReloadComponent.IsReload || __instance.ShootNum == 0)
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
             {
                 return;
             }
-
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
-        }
-    }
-    
-    [HarmonyPatch(typeof(ASDownUpShoot), "OnDown")]
-    public class bhaptics_OnFireDownUpShootDown
-    {
-        [HarmonyPostfix]
-        public static void Postfix(ASDownUpShoot __instance)
-        {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null
-                || __instance.ReloadComponent.IsReload || __instance.ShootNum == 0)
+            Plugin.Log.LogMessage(__instance.ItemID + " " + __instance.ItemSID);
+            if (__instance.ItemID == 995)
             {
-                return;
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
             }
-
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
     
@@ -291,7 +277,7 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
-    
+
 
     /* this method will activate haptic feedback "heartbeat" at every down press of Right trigger only.  This will activate without exception at every down press of right trigger including while there are no enemies present or with enemies present and being attacked.
     [HarmonyPatch(typeof(ASFlyswordShoot), "OnDown")]
@@ -333,6 +319,23 @@ namespace GunfireRebornBhaptics
     #endregion
 
     #region Moves
+
+    /**
+     * OnJumping
+     */
+    [HarmonyPatch(typeof(HeroMoveState.HeroMoveMotor), "OnJump")]
+    public class bhaptics_OnJumping
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("OnJump");
+        }
+    }
 
     /**
      * After jumps when touching floor
