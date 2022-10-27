@@ -194,7 +194,7 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 CloudWeaver_mrse.WaitOne();
-                PlaybackHaptics("FlySwordVest");
+                //PlaybackHaptics("FlySwordVest");
                 PlaybackHaptics("FlySwordArmRWristSpinning");
                 Thread.Sleep(1000);
             }
