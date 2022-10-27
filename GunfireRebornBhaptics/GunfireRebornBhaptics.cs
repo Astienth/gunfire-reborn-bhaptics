@@ -366,7 +366,7 @@ namespace GunfireRebornBhaptics
     }
     */
     //triggering skill
-    [HarmonyPatch(typeof(HeroAttackCtrl), "OnButtonUpActiveSkills")]
+    [HarmonyPatch(typeof(HeroAttackCtrl), "StartActiveSkills")]
     public class bhaptics_OnPrimarySkill
     {
         [HarmonyPostfix]
@@ -434,7 +434,7 @@ namespace GunfireRebornBhaptics
     /**
      * Secondary skill
      */
-    [HarmonyPatch(typeof(HeroAttackCtrl), "ThrowGrenade")]
+    [HarmonyPatch(typeof(HeroAttackCtrl), "ReadyThrowGrenade")]
     public class bhaptics_OnSecondarySkill
     {
         [HarmonyPostfix]
@@ -444,8 +444,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-
-            Plugin.Log.LogMessage("THROW ");
 
             //heroIds switch cases
             switch (HeroAttackCtrl.HeroObj.playerProp.SID)
