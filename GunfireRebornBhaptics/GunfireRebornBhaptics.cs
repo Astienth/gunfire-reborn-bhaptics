@@ -52,11 +52,15 @@ namespace GunfireRebornBhaptics
             return heroId;
         }
 
-        public static string getHandSide()
+        public static string getHandSide(int weaponId)
         {
             if (getHeroId() == 268437476)
             {
-                return (dogFuryActive) ? "L" : "R";
+                if (dogFuryActive)
+                {
+                    NewPlayerObject heroObj = HeroAttackCtrl.HeroObj;
+                    return (weaponId == heroObj.PlayerCom.CurWeaponID) ? "R" : "L";
+                }
             }
             return "R";
         }
@@ -79,11 +83,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            // dog 268437476  268437476
-            Plugin.Log.LogMessage(HeroCtrlMgr.GetHeroID());
             if (__instance.ReloadComponent.m_IsReload)
             {
-                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
@@ -101,8 +103,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide());
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -119,8 +121,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide());
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -137,8 +139,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest_" + Plugin.getHandSide());
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_" + Plugin.getHandSide());
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -159,7 +161,7 @@ namespace GunfireRebornBhaptics
             {
                 Plugin.chargeWeaponCanShoot = true;
                 //start thread
-                Plugin.tactsuitVr.StartChargingWeapon();
+                Plugin.tactsuitVr.StartChargingWeapon(Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
@@ -181,10 +183,10 @@ namespace GunfireRebornBhaptics
             {
                 Plugin.chargeWeaponCanShoot = false;
                 //stop thread
-                Plugin.tactsuitVr.StopChargingWeapon();
+                Plugin.tactsuitVr.StopChargingWeapon(Plugin.getHandSide(__instance.ItemID));
 
-                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease_" + Plugin.getHandSide());
-                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotReleaseArms_" + Plugin.getHandSide());
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease_" + Plugin.getHandSide(__instance.ItemID));
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotReleaseArms_" + Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
@@ -204,7 +206,7 @@ namespace GunfireRebornBhaptics
             }
             Plugin.continueWeaponCanShoot = true;
             //start thread
-            Plugin.tactsuitVr.StartContinueWeapon();
+            Plugin.tactsuitVr.StartContinueWeapon(Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -225,7 +227,7 @@ namespace GunfireRebornBhaptics
             {
                 Plugin.continueWeaponCanShoot = false;
                 //stop thread
-                Plugin.tactsuitVr.StopContinueWeapon();
+                Plugin.tactsuitVr.StopContinueWeapon(Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
@@ -246,8 +248,8 @@ namespace GunfireRebornBhaptics
             }
             if (__instance.ItemID == 995)
             {
-                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide());
-                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
@@ -304,8 +306,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide());
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -353,20 +355,6 @@ namespace GunfireRebornBhaptics
     }
     */
 
-    [HarmonyPatch(typeof(ASSingleSecShoot), "StartBulletSkill")]
-    public class bhaptics_OnASSingleSecShoot
-    {
-        [HarmonyPostfix]
-        public static void Postfix(ASSingleSecShoot __instance)
-        {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
-            {
-                return;
-            }
-            Plugin.tactsuitVr.PlaybackHaptics("Heal");
-
-        }
-    }
     #endregion
 
     #region Moves
@@ -515,6 +503,7 @@ namespace GunfireRebornBhaptics
             {
                
                 Plugin.tactsuitVr.PlaybackHaptics("Death");
+                Plugin.tactsuitVr.StopThreads();
                 Plugin.tactsuitVr.StartHeartBeat();
             }
         }
