@@ -194,8 +194,8 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 CloudWeaver_mrse.WaitOne();
-                PlaybackHaptics("FlySwordVest");
-                PlaybackHaptics("FlySwordArmRWristSpinning");
+                PlaybackHaptics("FlySwordVest_" + Plugin.getHandSide());
+                PlaybackHaptics("FlySwordArmRWristSpinning_" + Plugin.getHandSide());
                 Thread.Sleep(1000);
             }
         }
@@ -218,8 +218,8 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 ChargingWeapon_mrse.WaitOne();
-                PlaybackHaptics("ChargedShotVest", true, 0.3f);
-                PlaybackHaptics("ChargedShotArm_R", true, 0.4f);
+                PlaybackHaptics("ChargedShotVest_" + Plugin.getHandSide(), true, 0.3f);
+                PlaybackHaptics("ChargedShotArm_" + Plugin.getHandSide(), true, 0.4f);
                 Thread.Sleep(1000); 
             }
         }
@@ -240,8 +240,8 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 ContinueWeapon_mrse.WaitOne();
-                PlaybackHaptics("ContinuousVest");
-                PlaybackHaptics("ContinuousArmR");
+                PlaybackHaptics("ContinuousVest_" + Plugin.getHandSide());
+                PlaybackHaptics("ContinuousArm_" + Plugin.getHandSide());
                 Thread.Sleep(400);
             }
         }

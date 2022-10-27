@@ -20,6 +20,9 @@ namespace GunfireRebornBhaptics
         public static bool chargeWeaponCanShoot = false; 
         public static bool continueWeaponCanShoot = false;
 
+        public static int heroId = 0;
+        public static bool dogFuryActive = false;
+
         public override void Load()
         {
             // Make my own logger so it can be accessed from the Tactsuit class
@@ -38,6 +41,24 @@ namespace GunfireRebornBhaptics
             // patch all functions
             var harmony = new Harmony("bhaptics.patch.GunfireRebornBhaptics");
             harmony.PatchAll();
+        }
+
+        public static int getHeroId()
+        {
+            if (heroId == 0)
+            {
+                heroId = HeroCtrlMgr.GetHeroID();
+            }
+            return heroId;
+        }
+
+        public static string getHandSide()
+        {
+            if (getHeroId() == 268437476)
+            {
+                return (dogFuryActive) ? "L" : "R";
+            }
+            return "R";
         }
     }
 
@@ -58,9 +79,11 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+            // dog 268437476  268437476
+            Plugin.Log.LogMessage(HeroCtrlMgr.GetHeroID());
             if (__instance.ReloadComponent.m_IsReload)
             {
-                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
             }
         }
     }
@@ -78,8 +101,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide());
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
         }
     }
 
@@ -96,8 +119,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide());
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
         }
     }
 
@@ -114,8 +137,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest");
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest_" + Plugin.getHandSide());
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_" + Plugin.getHandSide());
         }
     }
 
@@ -160,8 +183,8 @@ namespace GunfireRebornBhaptics
                 //stop thread
                 Plugin.tactsuitVr.StopChargingWeapon();
 
-                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease");
-                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease_RT");
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease_" + Plugin.getHandSide());
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotReleaseArms_" + Plugin.getHandSide());
             }
         }
     }
@@ -221,11 +244,10 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage(__instance.ItemID + " " + __instance.ItemSID);
             if (__instance.ItemID == 995)
             {
-                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide());
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
             }
         }
     }
@@ -246,7 +268,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("Cloud Weaver");
             Plugin.tactsuitVr.StartCloudWeaver();
         }
     }
@@ -283,9 +304,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("Cloud Weaver FlyswordOnDown");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide());
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide());
         }
     }
 
@@ -332,6 +352,21 @@ namespace GunfireRebornBhaptics
         }
     }
     */
+
+    [HarmonyPatch(typeof(ASSingleSecShoot), "StartBulletSkill")]
+    public class bhaptics_OnASSingleSecShoot
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ASSingleSecShoot __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("Heal");
+
+        }
+    }
     #endregion
 
     #region Moves
