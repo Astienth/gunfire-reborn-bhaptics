@@ -20,6 +20,8 @@ namespace GunfireRebornBhaptics
         public static bool chargeWeaponCanShoot = false; 
         public static bool continueWeaponCanShoot = false;
 
+        public static bool canUsePrimary = true;
+
         public override void Load()
         {
             // Make my own logger so it can be accessed from the Tactsuit class
@@ -39,13 +41,23 @@ namespace GunfireRebornBhaptics
             var harmony = new Harmony("bhaptics.patch.GunfireRebornBhaptics");
             harmony.PatchAll();
         }
+
+        public static string getHandSide(int weaponId)
+        {
+            //dog case
+            if (HeroAttackCtrl.HeroObj.playerProp.SID == 201)
+            {
+                NewPlayerObject heroObj = HeroAttackCtrl.HeroObj;
+                return (weaponId == heroObj.PlayerCom.CurWeaponID) ? "R" : "L";
+            }
+            return "R";
+        }
     }
 
     #region guns
 
     /**
      * Many different classes for guns, not a single parent one.
-     * TODO : make an associative array with weapon id => tact pattern ?
     */
 
     [HarmonyPatch(typeof(ASBaseShoot), "OnReload")]
@@ -60,7 +72,7 @@ namespace GunfireRebornBhaptics
             }
             if (__instance.ReloadComponent.m_IsReload)
             {
-                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
@@ -78,8 +90,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -96,8 +108,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -114,8 +126,8 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest");
-            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("ChargedShotArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -136,7 +148,7 @@ namespace GunfireRebornBhaptics
             {
                 Plugin.chargeWeaponCanShoot = true;
                 //start thread
-                Plugin.tactsuitVr.StartChargingWeapon();
+                Plugin.tactsuitVr.StartChargingWeapon(Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
@@ -158,10 +170,10 @@ namespace GunfireRebornBhaptics
             {
                 Plugin.chargeWeaponCanShoot = false;
                 //stop thread
-                Plugin.tactsuitVr.StopChargingWeapon();
+                Plugin.tactsuitVr.StopChargingWeapon(Plugin.getHandSide(__instance.ItemID));
 
-                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease");
-                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease_RT");
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotRelease_" + Plugin.getHandSide(__instance.ItemID));
+                Plugin.tactsuitVr.PlaybackHaptics("ChargedShotReleaseArms_" + Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
@@ -181,7 +193,7 @@ namespace GunfireRebornBhaptics
             }
             Plugin.continueWeaponCanShoot = true;
             //start thread
-            Plugin.tactsuitVr.StartContinueWeapon();
+            Plugin.tactsuitVr.StartContinueWeapon(Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -202,50 +214,39 @@ namespace GunfireRebornBhaptics
             {
                 Plugin.continueWeaponCanShoot = false;
                 //stop thread
-                Plugin.tactsuitVr.StopContinueWeapon();
+                Plugin.tactsuitVr.StopContinueWeapon(Plugin.getHandSide(__instance.ItemID));
             }
         }
     }
 
     /**
      * DownUpShoot (Wild hunt) arms and vest 
+     * using ASBaseShoot.StartBulletSkill to cover only the wildhunt itemID == 995
      */
-    [HarmonyPatch(typeof(ASDownUpShoot), "OnUp")]
-    public class bhaptics_OnFireDownUpShootUp
+    [HarmonyPatch(typeof(ASBaseShoot), "StartBulletSkill")]
+    public class bhaptics_OnFireDownUpShoot
     {
         [HarmonyPostfix]
-        public static void Postfix(ASDownUpShoot __instance)
+        public static void Postfix(ASBaseShoot __instance)
         {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null
-                || __instance.ReloadComponent.IsReload || __instance.ShootNum == 0)
+            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
             {
                 return;
             }
-
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
-        }
-    }
-    
-    [HarmonyPatch(typeof(ASDownUpShoot), "OnDown")]
-    public class bhaptics_OnFireDownUpShootDown
-    {
-        [HarmonyPostfix]
-        public static void Postfix(ASDownUpShoot __instance)
-        {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null
-                || __instance.ReloadComponent.IsReload || __instance.ShootNum == 0)
+            if (__instance.ItemID == 995)
             {
-                return;
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
             }
-
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
         }
     }
     
-    // this method will activate feedback only when cloud weaver transitions from 1 sword held in hand (inactive state/entering new zones or switching to cloud weaver) to active state in which the 5 cloud weaver swords begin spinng around the wrist,
-    // this can only be activated by initiating sword spinning, it will not activate again until cloud weaver is inactive (new zone or switching) 
+    // this method will activate feedback only when cloud weaver
+    // transitions from 1 sword held in hand (inactive state/entering new
+    // zones or switching to cloud weaver) to active state in which the 5
+    // cloud weaver swords begin spinng around the wrist,
+    // this can only be activated by initiating sword spinning, it will
+    // not activate again until cloud weaver is inactive (new zone or switching) 
     [HarmonyPatch(typeof(ASFlyswordShoot), "StartBulletSkill")]
     public class bhaptics_OnFireFlySwordStart
     {
@@ -256,11 +257,14 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("Cloud Weaver");
-            Plugin.tactsuitVr.StartCloudWeaver();
+            Plugin.tactsuitVr.StartCloudWeaver(Plugin.getHandSide(__instance.ItemID));
         }
     }
 
+    /**
+     * LANCE : Might not be enough and not covering
+     * when downed, when ui on (scrolls, pause menu, etc)
+     */
     [HarmonyPatch(typeof(ASFlyswordShoot), "Destroy")]
     public class bhaptics_OnFireFlySwordStopHaptics
     {
@@ -271,11 +275,14 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.StopCloudWeaver();
+            Plugin.tactsuitVr.StopCloudWeaver(Plugin.getHandSide(__instance.ItemID));
         }
     }
 
-    // this method will activate feedback only while cloud weaver is actively hitting enemies, does not activate from any button presses, may be ideal to change from flyswordvest and flyswordarmwristspinning to recoil variants
+    // this method will activate feedback only while cloud weaver is
+    // actively hitting enemies, does not activate from any button presses,
+    // may be ideal to change from flyswordvest and flyswordarmwristspinning
+    // to recoil variants
     [HarmonyPatch(typeof(ASFlyswordShoot), "FlyswordOnDown")]
     public class bhaptics_OnFireFlySwordOnDown
     {
@@ -286,14 +293,16 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("Cloud Weaver FlyswordOnDown");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
-    
 
-    /* this method will activate haptic feedback "heartbeat" at every down press of Right trigger only.  This will activate without exception at every down press of right trigger including while there are no enemies present or with enemies present and being attacked.
+
+    /* this method will activate haptic feedback "heartbeat" at every down press 
+     * of Right trigger only.  This will activate without exception at every down 
+     * press of right trigger including while there are no enemies present or with 
+     * enemies present and being attacked.
     [HarmonyPatch(typeof(ASFlyswordShoot), "OnDown")]
     public class bhaptics_OnFireFSOnDown
     {
@@ -313,7 +322,9 @@ namespace GunfireRebornBhaptics
 
 
     /*
-     * this method activates haptic feedback, "heal" at every "on up" or release after pressing of buttons Y, X, and Right trigger only. This will persistently activate, even in menus.
+     * this method activates haptic feedback, "heal" at every "on up" or 
+     * release after pressing of buttons Y, X, and Right trigger only. 
+     * This will persistently activate, even in menus.
     [HarmonyPatch(typeof(ASFlyswordShoot), "OnUp")]
     public class bhaptics_OnFireFSOnUp
     {
@@ -330,9 +341,167 @@ namespace GunfireRebornBhaptics
         }
     }
     */
+
+    #endregion
+
+    #region Primary skills (furies)
+
+    //onStarting cooldown
+    // NOT WORKING, LOOKING FOR A PLACE TO CHECK PRIMARY COOLDOWN !!
+
+    [HarmonyPatch(typeof(HeroAttackCtrl), "OnPCEndSkillCharge")]
+    public class bhaptics_OnEndingSkill
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.canUsePrimary = false;
+            Plugin.Log.LogMessage("COOLDOWN");
+
+        }
+    }
+
+    //triggering skill
+    [HarmonyPatch(typeof(HeroAttackCtrl), "OnButtonUpActiveSkills")]
+    public class bhaptics_OnPrimarySkill
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled || !Plugin.canUsePrimary)
+            {
+                return;
+            }
+
+            //heroIds switch cases
+            switch (HeroAttackCtrl.HeroObj.playerProp.SID)
+            {
+                //dog
+                case 201:
+                    Plugin.tactsuitVr.PlaybackHaptics("DogDualWield");
+                    break;
+                //cat
+                case 205:
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillCat");
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillCatVest");
+                    break;
+                    
+                //monkey
+                case 214:
+                    break;
+
+                //falcon
+                case 206:
+                    break;
+
+                //tiger
+                case 207:
+                    break;
+
+                //turtle
+                case 213:
+                    break;
+
+                //fox
+                case 215:
+                    break;
+
+                //rabbit
+                case 212:
+                    break;
+
+                default:
+                    return;
+            }
+        }
+    }
+
+    /**
+     * Secondary skill
+     */
+    [HarmonyPatch(typeof(HeroAttackCtrl), "ThrowGrenade")]
+    public class bhaptics_OnSecondarySkill
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            Plugin.Log.LogMessage("THROW ");
+
+            //heroIds switch cases
+            switch (HeroAttackCtrl.HeroObj.playerProp.SID)
+            {
+                //dog
+                case 201:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
+                    break;
+                //cat
+                case 205:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
+                    break;
+
+                //monkey
+                case 214:
+                    break;
+
+                //falcon
+                case 206:
+                    break;
+
+                //tiger
+                case 207:
+                    break;
+
+                //turtle
+                case 213:
+                    break;
+
+                //fox
+                case 215:
+                    break;
+
+                //rabbit
+                case 212:
+                    break;
+
+                default:
+                    return;
+            }
+        }
+    }
+
+    #endregion
+
+    #region Secondary skills (grenades)
+
     #endregion
 
     #region Moves
+
+    /**
+    * OnJumping
+    */
+    [HarmonyPatch(typeof(HeroMoveState.HeroMoveMotor), "OnJump")]
+    public class bhaptics_OnJumping
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("OnJump", true, 0.5f);
+        }
+    }
 
     /**
      * After jumps when touching floor
@@ -449,6 +618,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+
+            Plugin.Log.LogMessage("HIT " + HeroAttackCtrl.HeroObj.hitPos.ToString());
+
             Plugin.tactsuitVr.PlaybackHaptics("Impact");
             //armor break for heros with armor and no shield
             PlayerProp playerProp = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
@@ -461,6 +633,7 @@ namespace GunfireRebornBhaptics
             {
                
                 Plugin.tactsuitVr.PlaybackHaptics("Death");
+                Plugin.tactsuitVr.StopThreads();
                 Plugin.tactsuitVr.StartHeartBeat();
             }
         }
