@@ -20,7 +20,7 @@ namespace GunfireRebornBhaptics
         public static bool chargeWeaponCanShoot = false; 
         public static bool continueWeaponCanShoot = false;
 
-        public static int heroId = 0;
+        public static bool canUsePrimary = true;
 
         public override void Load()
         {
@@ -42,19 +42,10 @@ namespace GunfireRebornBhaptics
             harmony.PatchAll();
         }
 
-        public static int getHeroId()
-        {
-            if (heroId == 0)
-            {
-                heroId = HeroCtrlMgr.GetHeroID();
-            }
-            return heroId;
-        }
-
         public static string getHandSide(int weaponId)
         {
             //dog case
-            if (getHeroId() == 268437476)
+            if (HeroAttackCtrl.HeroObj.playerProp.SID == 201)
             {
                 NewPlayerObject heroObj = HeroAttackCtrl.HeroObj;
                 return (weaponId == heroObj.PlayerCom.CurWeaponID) ? "R" : "L";
@@ -355,8 +346,85 @@ namespace GunfireRebornBhaptics
 
     #region Primary skills (furies)
 
+    //onStarting cooldown
+    // NOT WORKING, LOOKING FOR A PLACE TO CHECK PRIMARY COOLDOWN !!
+
+    [HarmonyPatch(typeof(HeroAttackCtrl), "OnPCEndSkillCharge")]
+    public class bhaptics_OnEndingSkill
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.canUsePrimary = false;
+            Plugin.Log.LogMessage("COOLDOWN");
+
+        }
+    }
+
+    //triggering skill
     [HarmonyPatch(typeof(HeroAttackCtrl), "OnButtonUpActiveSkills")]
     public class bhaptics_OnPrimarySkill
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled || !Plugin.canUsePrimary)
+            {
+                return;
+            }
+
+            //heroIds switch cases
+            switch (HeroAttackCtrl.HeroObj.playerProp.SID)
+            {
+                //dog
+                case 201:
+                    Plugin.tactsuitVr.PlaybackHaptics("DogDualWield");
+                    break;
+                //cat
+                case 205:
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillCat");
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillCatVest");
+                    break;
+                    
+                //monkey
+                case 214:
+                    break;
+
+                //falcon
+                case 206:
+                    break;
+
+                //tiger
+                case 207:
+                    break;
+
+                //turtle
+                case 213:
+                    break;
+
+                //fox
+                case 215:
+                    break;
+
+                //rabbit
+                case 212:
+                    break;
+
+                default:
+                    return;
+            }
+        }
+    }
+
+    /**
+     * Secondary skill
+     */
+    [HarmonyPatch(typeof(HeroAttackCtrl), "ThrowGrenade")]
+    public class bhaptics_OnSecondarySkill
     {
         [HarmonyPostfix]
         public static void Postfix()
@@ -366,13 +434,44 @@ namespace GunfireRebornBhaptics
                 return;
             }
 
+            Plugin.Log.LogMessage("THROW ");
+
             //heroIds switch cases
-            switch (Plugin.heroId)
+            switch (HeroAttackCtrl.HeroObj.playerProp.SID)
             {
                 //dog
-                case 268437476:
-                    Plugin.tactsuitVr.PlaybackHaptics("Heal");
+                case 201:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
                     break;
+                //cat
+                case 205:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
+                    break;
+
+                //monkey
+                case 214:
+                    break;
+
+                //falcon
+                case 206:
+                    break;
+
+                //tiger
+                case 207:
+                    break;
+
+                //turtle
+                case 213:
+                    break;
+
+                //fox
+                case 215:
+                    break;
+
+                //rabbit
+                case 212:
+                    break;
+
                 default:
                     return;
             }
@@ -388,8 +487,8 @@ namespace GunfireRebornBhaptics
     #region Moves
 
     /**
-     * OnJumping
-     */
+    * OnJumping
+    */
     [HarmonyPatch(typeof(HeroMoveState.HeroMoveMotor), "OnJump")]
     public class bhaptics_OnJumping
     {
@@ -519,6 +618,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+
+            Plugin.Log.LogMessage("HIT " + HeroAttackCtrl.HeroObj.hitPos.ToString());
+
             Plugin.tactsuitVr.PlaybackHaptics("Impact");
             //armor break for heros with armor and no shield
             PlayerProp playerProp = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
