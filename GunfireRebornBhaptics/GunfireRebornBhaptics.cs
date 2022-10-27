@@ -20,8 +20,6 @@ namespace GunfireRebornBhaptics
         public static bool chargeWeaponCanShoot = false; 
         public static bool continueWeaponCanShoot = false;
 
-        public static bool canUsePrimary = true;
-
         public override void Load()
         {
             // Make my own logger so it can be accessed from the Tactsuit class
@@ -372,7 +370,7 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (Plugin.tactsuitVr.suitDisabled || !Plugin.canUsePrimary)
+            if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
             }
