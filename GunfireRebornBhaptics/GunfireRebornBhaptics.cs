@@ -349,7 +349,7 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.PlaybackHaptics("OnJump");
+            Plugin.tactsuitVr.PlaybackHaptics("OnJump", true, 0.5f);
         }
     }
 
