@@ -270,7 +270,7 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.StartCloudWeaver();
+            Plugin.tactsuitVr.StartCloudWeaver(Plugin.getHandSide(__instance.ItemID));
         }
     }
 
@@ -288,7 +288,7 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.tactsuitVr.StopCloudWeaver();
+            Plugin.tactsuitVr.StopCloudWeaver(Plugin.getHandSide(__instance.ItemID));
         }
     }
 

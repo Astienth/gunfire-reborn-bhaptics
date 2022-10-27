@@ -20,7 +20,8 @@ namespace MyBhapticsTactsuit
         private static ManualResetEvent ChargingWeaponL_mrse = new ManualResetEvent(false);
         private static ManualResetEvent ContinueWeaponR_mrse = new ManualResetEvent(false);
         private static ManualResetEvent ContinueWeaponL_mrse = new ManualResetEvent(false);
-        private static ManualResetEvent CloudWeaver_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent CloudWeaverR_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent CloudWeaverL_mrse = new ManualResetEvent(false);
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
 
@@ -56,8 +57,10 @@ namespace MyBhapticsTactsuit
             ContinueWeaponRThread.Start();
             Thread ContinueWeaponLThread = new Thread(ContinueWeaponL);
             ContinueWeaponLThread.Start();
-            Thread CloudWeaverThread = new Thread(CloudWeaver);
-            CloudWeaverThread.Start();
+            Thread CloudWeaverRThread = new Thread(CloudWeaverR);
+            CloudWeaverRThread.Start();
+            Thread CloudWeaverLThread = new Thread(CloudWeaverR);
+            CloudWeaverLThread.Start();
         }
 
         public void LOG(string logStr)
@@ -143,26 +146,52 @@ namespace MyBhapticsTactsuit
             HeartBeat_mrse.Reset();
         }
 
-        public void CloudWeaver()
+        // CLOUD WEAVER WEAPON
+        public void CloudWeaverR()
         {
             while (true)
             {
                 // Check if reset event is active
-                CloudWeaver_mrse.WaitOne();
+                CloudWeaverR_mrse.WaitOne();
                 PlaybackHaptics("FlySwordVest_R");
                 PlaybackHaptics("FlySwordArmRWristSpinning_R");
                 Thread.Sleep(1000);
             }
         }
-
-        public void StartCloudWeaver()
+        public void CloudWeaverL()
         {
-            CloudWeaver_mrse.Set();
+            while (true)
+            {
+                // Check if reset event is active
+                CloudWeaverR_mrse.WaitOne();
+                PlaybackHaptics("FlySwordVest_L");
+                PlaybackHaptics("FlySwordArmRWristSpinning_L");
+                Thread.Sleep(1000);
+            }
         }
 
-        public void StopCloudWeaver()
+        public void StartCloudWeaver(string side = "R")
         {
-             CloudWeaver_mrse.Reset();
+            if (side == "R")
+            {
+                CloudWeaverR_mrse.Set();
+            }
+            else
+            {
+                CloudWeaverL_mrse.Set();
+            }
+        }
+
+        public void StopCloudWeaver(string side = "R")
+        {
+            if (side == "R")
+            {
+                CloudWeaverR_mrse.Reset();
+            }
+            else
+            {
+                CloudWeaverL_mrse.Reset();
+            }
         }
 
         //CHARGING WEAPONS FUNCTIONS
@@ -284,7 +313,8 @@ namespace MyBhapticsTactsuit
             ChargingWeaponR_mrse.Reset();
             ContinueWeaponL_mrse.Reset();
             ContinueWeaponR_mrse.Reset();
-            CloudWeaver_mrse.Reset();
+            CloudWeaverR_mrse.Reset();
+            CloudWeaverL_mrse.Reset();
         }
 
 
