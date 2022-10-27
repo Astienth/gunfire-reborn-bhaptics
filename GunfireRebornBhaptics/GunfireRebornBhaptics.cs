@@ -21,7 +21,6 @@ namespace GunfireRebornBhaptics
         public static bool continueWeaponCanShoot = false;
 
         public static int heroId = 0;
-        public static bool dogFuryActive = false;
 
         public override void Load()
         {
@@ -54,13 +53,11 @@ namespace GunfireRebornBhaptics
 
         public static string getHandSide(int weaponId)
         {
+            //dog case
             if (getHeroId() == 268437476)
             {
-                if (dogFuryActive)
-                {
-                    NewPlayerObject heroObj = HeroAttackCtrl.HeroObj;
-                    return (weaponId == heroObj.PlayerCom.CurWeaponID) ? "R" : "L";
-                }
+                NewPlayerObject heroObj = HeroAttackCtrl.HeroObj;
+                return (weaponId == heroObj.PlayerCom.CurWeaponID) ? "R" : "L";
             }
             return "R";
         }
@@ -357,6 +354,30 @@ namespace GunfireRebornBhaptics
     #endregion
 
     #region Primary skills (furies)
+
+    [HarmonyPatch(typeof(HeroAttackCtrl), "OnButtonUpActiveSkills")]
+    public class bhaptics_OnPrimarySkill
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            //heroIds switch cases
+            switch (Plugin.heroId)
+            {
+                //dog
+                case 268437476:
+                    Plugin.tactsuitVr.PlaybackHaptics("Heal");
+                    break;
+                default:
+                    return;
+            }
+        }
+    }
 
     #endregion
 
