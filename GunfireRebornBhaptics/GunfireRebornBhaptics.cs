@@ -70,7 +70,6 @@ namespace GunfireRebornBhaptics
 
     /**
      * Many different classes for guns, not a single parent one.
-     * TODO : make an associative array with weapon id => tact pattern ?
     */
 
     [HarmonyPatch(typeof(ASBaseShoot), "OnReload")]
@@ -354,6 +353,14 @@ namespace GunfireRebornBhaptics
         }
     }
     */
+
+    #endregion
+
+    #region Primary skills (furies)
+
+    #endregion
+
+    #region Secondary skills (grenades)
 
     #endregion
 
