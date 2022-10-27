@@ -348,7 +348,7 @@ namespace GunfireRebornBhaptics
 
     //onStarting cooldown
     // NOT WORKING, LOOKING FOR A PLACE TO CHECK PRIMARY COOLDOWN !!
-
+    /*
     [HarmonyPatch(typeof(HeroAttackCtrl), "OnPCEndSkillCharge")]
     public class bhaptics_OnEndingSkill
     {
@@ -364,7 +364,7 @@ namespace GunfireRebornBhaptics
 
         }
     }
-
+    */
     //triggering skill
     [HarmonyPatch(typeof(HeroAttackCtrl), "OnButtonUpActiveSkills")]
     public class bhaptics_OnPrimarySkill
@@ -392,6 +392,8 @@ namespace GunfireRebornBhaptics
                     
                 //monkey
                 case 214:
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillMonkeyArm");
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillMonkeyVest");
                     break;
 
                 //falcon
@@ -400,18 +402,27 @@ namespace GunfireRebornBhaptics
 
                 //tiger
                 case 207:
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTigerVest");
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTigerArms");
                     break;
 
                 //turtle
                 case 213:
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTurtleArm_R"); 
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTurtleVest");
                     break;
 
                 //fox
                 case 215:
+                    // TODO Fox primary skills nedds release effect
+                    //"PrimarySkillFoxVest" and "Arms" are supposed to be continuous
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillFoxVest"); 
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillFoxArms_");
                     break;
 
                 //rabbit
                 case 212:
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillBunnyVest"); 
                     break;
 
                 default:
@@ -441,35 +452,49 @@ namespace GunfireRebornBhaptics
             {
                 //dog
                 case 201:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillDogVest"); 
                     Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
                     break;
                 //cat
                 case 205:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCatVest");
                     Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
                     break;
 
                 //monkey
                 case 214:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillMonkeyVest");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillMonkeyArm");
                     break;
 
                 //falcon
                 case 206:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillBirdArm");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillBirdVest");
                     break;
 
                 //tiger
                 case 207:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillTigerArm");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillTigerVest");
                     break;
 
                 //turtle
                 case 213:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillTurtleArm");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillTurtleVest");
                     break;
 
                 //fox
                 case 215:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillFoxArm");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillFoxVest");
                     break;
 
                 //rabbit
-                case 212:
+                case 212:                    
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillBunnyArm");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillBunnyVest");
                     break;
 
                 default:
