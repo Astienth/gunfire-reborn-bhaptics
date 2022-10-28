@@ -23,7 +23,8 @@ namespace MyBhapticsTactsuit
         private static ManualResetEvent CloudWeaverR_mrse = new ManualResetEvent(false);
         private static ManualResetEvent CloudWeaverL_mrse = new ManualResetEvent(false);
         private static ManualResetEvent turtlePrimarySkill_mrse = new ManualResetEvent(false);
-        
+        private static ManualResetEvent foxPrimarySkill_mrse = new ManualResetEvent(false);
+
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
 
@@ -65,6 +66,8 @@ namespace MyBhapticsTactsuit
             CloudWeaverLThread.Start();
             Thread turtlePrimarySkillThread = new Thread(turtlePrimarySkill);
             turtlePrimarySkillThread.Start();
+            Thread foxPrimarySkillThread = new Thread(foxPrimarySkill);
+            foxPrimarySkillThread.Start();
         }
 
         public void LOG(string logStr)
@@ -296,7 +299,6 @@ namespace MyBhapticsTactsuit
             }
         }
 
-
         public void turtlePrimarySkill()
         {
             while (true)
@@ -316,6 +318,28 @@ namespace MyBhapticsTactsuit
         public void StopTurtlePrimarySkill()
         {
             turtlePrimarySkill_mrse.Reset();
+        }
+
+        public void foxPrimarySkill()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                foxPrimarySkill_mrse.WaitOne();
+                PlaybackHaptics("PrimarySkillFoxVest");
+                PlaybackHaptics("PrimarySkillFoxArms_");
+                Thread.Sleep(500);
+            }
+        }
+
+        public void StartFoxPrimarySkill()
+        {
+            foxPrimarySkill_mrse.Set();
+        }
+
+        public void StopFoxPrimarySkill()
+        {
+            foxPrimarySkill_mrse.Reset();
         }
 
         public void StopHapticFeedback(String effect)
@@ -342,6 +366,7 @@ namespace MyBhapticsTactsuit
             CloudWeaverR_mrse.Reset();
             CloudWeaverL_mrse.Reset();
             turtlePrimarySkill_mrse.Reset();
+            foxPrimarySkill_mrse.Reset();
         }
 
 

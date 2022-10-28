@@ -346,25 +346,6 @@ namespace GunfireRebornBhaptics
 
     #region Primary skills (furies)
 
-    //onStarting cooldown
-    // NOT WORKING, LOOKING FOR A PLACE TO CHECK PRIMARY COOLDOWN !!
-    /*
-    [HarmonyPatch(typeof(HeroAttackCtrl), "OnPCEndSkillCharge")]
-    public class bhaptics_OnEndingSkill
-    {
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            if (Plugin.tactsuitVr.suitDisabled)
-            {
-                return;
-            }
-            Plugin.canUsePrimary = false;
-            Plugin.Log.LogMessage("COOLDOWN");
-
-        }
-    }
-    */
     /**
      * triggering skill on Down
      */
@@ -372,6 +353,7 @@ namespace GunfireRebornBhaptics
     public class bhaptics_OnPrimarySkillOnDown
     {
         public static bool turtleStart = false;
+        public static int kasuniState = 0;
 
         [HarmonyPostfix]
         public static void Postfix()
@@ -423,10 +405,23 @@ namespace GunfireRebornBhaptics
 
                 //fox
                 case 215:
-                    // TODO Fox primary skills nedds release effect
-                    //"PrimarySkillFoxVest" and "Arms" are supposed to be continuous
-                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillFoxVest"); 
-                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillFoxArms_");
+                    //activation + continuous
+                    if (kasuniState == 0)
+                    {
+                        Plugin.tactsuitVr.StartFoxPrimarySkill();
+                        kasuniState = 1;
+                        break;
+                    }
+                    //release
+                    if (kasuniState == 1)
+                    {
+                        //stop effect
+                        Plugin.tactsuitVr.StopFoxPrimarySkill();
+                        Plugin.tactsuitVr.PlaybackHaptics("PrimaySkillFoxVestRelease");
+                        Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillFoxArmsRelease");
+                        kasuniState = 0;
+                        break;
+                    }
                     break;
 
                 //rabbit
@@ -437,6 +432,27 @@ namespace GunfireRebornBhaptics
                 default:
                     return;
             }
+        }
+    }
+    
+   /**
+    * Stop primary skills continuous effects turtle
+    */
+   [HarmonyPatch(typeof(HeroAttackCtrl), "BreakPower")]
+    public class bhaptics_OnSkillBreak
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            bhaptics_OnPrimarySkillOnDown.turtleStart = false;
+            Plugin.tactsuitVr.StopTurtlePrimarySkill();
+            bhaptics_OnPrimarySkillOnDown.kasuniState=0;
+            Plugin.tactsuitVr.StopFoxPrimarySkill();
         }
     }
 
