@@ -365,14 +365,16 @@ namespace GunfireRebornBhaptics
         }
     }
     */
-    //triggering skill
+    /**
+     * triggering skill on Down
+     */
     [HarmonyPatch(typeof(HeroAttackCtrl), "StartActiveSkills")]
-    public class bhaptics_OnPrimarySkill
+    public class bhaptics_OnPrimarySkillOnDown
     {
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (Plugin.tactsuitVr.suitDisabled)
+            if (Plugin.tactsuitVr.suitDisabled || HeroAttackCtrl.CanFireButtonStartCharging)
             {
                 return;
             }
@@ -432,10 +434,10 @@ namespace GunfireRebornBhaptics
     }
 
     /**
-     * Secondary skill
+     * Secondary skill on Down
      */
     [HarmonyPatch(typeof(HeroAttackCtrl), "ReadyThrowGrenade")]
-    public class bhaptics_OnSecondarySkill
+    public class bhaptics_OnSecondarySkillOnDown
     {
         [HarmonyPostfix]
         public static void Postfix()
@@ -447,18 +449,7 @@ namespace GunfireRebornBhaptics
 
             //heroIds switch cases
             switch (HeroAttackCtrl.HeroObj.playerProp.SID)
-            {
-                //dog
-                case 201:
-                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillDogVest"); 
-                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
-                    break;
-                //cat
-                case 205:
-                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCatVest");
-                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
-                    break;
-
+            {                
                 //monkey
                 case 214:
                     Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillMonkeyVest");
@@ -483,16 +474,50 @@ namespace GunfireRebornBhaptics
                     Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillTurtleVest");
                     break;
 
-                //fox
-                case 215:
-                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillFoxArm");
-                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillFoxVest");
-                    break;
-
                 //rabbit
                 case 212:                    
                     Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillBunnyArm");
                     Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillBunnyVest");
+                    break;
+
+                default:
+                    return;
+            }
+        }
+    }
+
+    /**
+     * Secondary skill
+     */
+    [HarmonyPatch(typeof(HeroAttackCtrl), "ThrowGrenade")]
+    public class bhaptics_OnSecondarySkillOnUp
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            //heroIds switch cases
+            switch (HeroAttackCtrl.HeroObj.playerProp.SID)
+            {
+                //cat
+                case 205:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCatVest");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
+                    break;
+
+                //dog
+                case 201:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillDogVest");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillCat");
+                    break;
+                //fox
+                case 215:
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillFoxArm");
+                    Plugin.tactsuitVr.PlaybackHaptics("SecondarySkillFoxVest");
                     break;
 
                 default:
