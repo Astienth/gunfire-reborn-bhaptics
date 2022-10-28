@@ -219,7 +219,7 @@ namespace GunfireRebornBhaptics
 
     /**
      * DownUpShoot (Wild hunt) arms and vest 
-     * using ASBaseShoot.StartBulletSkill to cover only the wildhunt itemID == 995
+     * using ASBaseShoot.StartBulletSkill to cover only the wildhunt itemSID == 1306
      */
     [HarmonyPatch(typeof(ASBaseShoot), "StartBulletSkill")]
     public class bhaptics_OnFireDownUpShoot
@@ -231,7 +231,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            if (__instance.ItemID == 995)
+            //Plugin.Log.LogMessage("ITEMID " + __instance.ItemID);
+            //Plugin.Log.LogMessage("ITEM SID "+__instance.ItemSID);
+            if (__instance.ItemSID == 1306)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
