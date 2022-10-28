@@ -22,6 +22,8 @@ namespace MyBhapticsTactsuit
         private static ManualResetEvent ContinueWeaponL_mrse = new ManualResetEvent(false);
         private static ManualResetEvent CloudWeaverR_mrse = new ManualResetEvent(false);
         private static ManualResetEvent CloudWeaverL_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent turtlePrimarySkill_mrse = new ManualResetEvent(false);
+        
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
 
@@ -61,6 +63,8 @@ namespace MyBhapticsTactsuit
             CloudWeaverRThread.Start();
             Thread CloudWeaverLThread = new Thread(CloudWeaverR);
             CloudWeaverLThread.Start();
+            Thread turtlePrimarySkillThread = new Thread(turtlePrimarySkill);
+            turtlePrimarySkillThread.Start();
         }
 
         public void LOG(string logStr)
@@ -292,6 +296,28 @@ namespace MyBhapticsTactsuit
             }
         }
 
+
+        public void turtlePrimarySkill()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                turtlePrimarySkill_mrse.WaitOne();
+                PlaybackHaptics("PrimarySkillTurtleArm_R");
+                Thread.Sleep(1000);
+            }
+        }
+
+        public void StartTurtlePrimarySkill()
+        {
+            turtlePrimarySkill_mrse.Set();
+        }
+
+        public void StopTurtlePrimarySkill()
+        {
+            turtlePrimarySkill_mrse.Reset();
+        }
+
         public void StopHapticFeedback(String effect)
         {
             hapticPlayer.TurnOff(effect);
@@ -315,6 +341,7 @@ namespace MyBhapticsTactsuit
             ContinueWeaponR_mrse.Reset();
             CloudWeaverR_mrse.Reset();
             CloudWeaverL_mrse.Reset();
+            turtlePrimarySkill_mrse.Reset();
         }
 
 

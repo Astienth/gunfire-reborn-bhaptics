@@ -371,6 +371,8 @@ namespace GunfireRebornBhaptics
     [HarmonyPatch(typeof(HeroAttackCtrl), "StartActiveSkills")]
     public class bhaptics_OnPrimarySkillOnDown
     {
+        public static bool turtleStart = false;
+
         [HarmonyPostfix]
         public static void Postfix()
         {
@@ -410,8 +412,13 @@ namespace GunfireRebornBhaptics
 
                 //turtle
                 case 213:
-                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTurtleArm_R"); 
-                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTurtleVest");
+                    if (!turtleStart)
+                    {
+                        turtleStart = true;
+                        //start effect
+                        Plugin.tactsuitVr.StartTurtlePrimarySkill();
+                        Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTurtleVest");
+                    }
                     break;
 
                 //fox
@@ -429,6 +436,30 @@ namespace GunfireRebornBhaptics
 
                 default:
                     return;
+            }
+        }
+    }
+
+    /**
+    * Stop primary skills continuous effects turtle
+    */
+    [HarmonyPatch(typeof(SkillBolt.Cartoon1200405), "Active")]
+    public class bhaptics_OnSkillEnd
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled || HeroAttackCtrl.HeroObj.playerProp.SID != 213)
+            {
+                return;
+            }
+
+            if (bhaptics_OnPrimarySkillOnDown.turtleStart)
+            {
+                bhaptics_OnPrimarySkillOnDown.turtleStart = false;
+                //stop effect
+                Plugin.tactsuitVr.StopTurtlePrimarySkill();
+                Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTurtleVest");
             }
         }
     }
@@ -485,7 +516,7 @@ namespace GunfireRebornBhaptics
             }
         }
     }
-
+    
     /**
      * Secondary skill
      */
@@ -666,8 +697,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-
-            Plugin.Log.LogMessage("HIT " + HeroAttackCtrl.HeroObj.hitPos.ToString());
 
             Plugin.tactsuitVr.PlaybackHaptics("Impact");
             //armor break for heros with armor and no shield
