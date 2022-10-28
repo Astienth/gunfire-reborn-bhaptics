@@ -442,7 +442,7 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (Plugin.tactsuitVr.suitDisabled)
+            if (Plugin.tactsuitVr.suitDisabled || !WarPanelManager.instance.m_canThrowGrenade)
             {
                 return;
             }
@@ -495,7 +495,7 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (Plugin.tactsuitVr.suitDisabled)
+            if (Plugin.tactsuitVr.suitDisabled || !WarPanelManager.instance.m_canThrowGrenade)
             {
                 return;
             }
