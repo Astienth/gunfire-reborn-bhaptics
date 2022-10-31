@@ -24,6 +24,7 @@ namespace MyBhapticsTactsuit
         private static ManualResetEvent CloudWeaverL_mrse = new ManualResetEvent(false);
         private static ManualResetEvent turtlePrimarySkill_mrse = new ManualResetEvent(false);
         private static ManualResetEvent foxPrimarySkill_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent bunnyPrimarySkill_mrse = new ManualResetEvent(false);
 
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
@@ -67,7 +68,9 @@ namespace MyBhapticsTactsuit
             Thread turtlePrimarySkillThread = new Thread(turtlePrimarySkill);
             turtlePrimarySkillThread.Start();
             Thread foxPrimarySkillThread = new Thread(foxPrimarySkill);
-            foxPrimarySkillThread.Start();
+            foxPrimarySkillThread.Start(); 
+            Thread bunnyPrimarySkillThread = new Thread(bunnyPrimarySkill);
+            bunnyPrimarySkillThread.Start();
         }
 
         public void LOG(string logStr)
@@ -250,7 +253,7 @@ namespace MyBhapticsTactsuit
             }
         }
 
-        // CONTINUOURS WEAPONS FUNCTIONS
+        // CONTINUOUS WEAPONS FUNCTIONS
         public void ContinueWeaponR()
         {
             while (true)
@@ -299,6 +302,27 @@ namespace MyBhapticsTactsuit
             }
         }
 
+        public void bunnyPrimarySkill()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                bunnyPrimarySkill_mrse.WaitOne();
+                PlaybackHaptics("PrimarySkillBunnyVest");
+                Thread.Sleep(1000);
+            }
+        }
+
+        public void StartBunnyPrimarySkill()
+        {
+            bunnyPrimarySkill_mrse.Set();
+        }
+
+        public void StopBunnyPrimarySkill()
+        {
+            bunnyPrimarySkill_mrse.Reset();
+        }
+        
         public void turtlePrimarySkill()
         {
             while (true)
@@ -367,6 +391,7 @@ namespace MyBhapticsTactsuit
             CloudWeaverL_mrse.Reset();
             turtlePrimarySkill_mrse.Reset();
             foxPrimarySkill_mrse.Reset();
+            bunnyPrimarySkill_mrse.Reset();
         }
 
 

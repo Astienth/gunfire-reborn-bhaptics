@@ -352,7 +352,7 @@ namespace GunfireRebornBhaptics
     [HarmonyPatch(typeof(HeroAttackCtrl), "StartActiveSkills")]
     public class bhaptics_OnPrimarySkillOnDown
     {
-        public static bool turtleStart = false;
+        public static bool continuousPrimaryStart = false;
         public static int kasuniState = 0;
 
         [HarmonyPostfix]
@@ -394,9 +394,9 @@ namespace GunfireRebornBhaptics
 
                 //turtle
                 case 213:
-                    if (!turtleStart)
+                    if (!continuousPrimaryStart)
                     {
-                        turtleStart = true;
+                        continuousPrimaryStart = true;
                         //start effect
                         Plugin.tactsuitVr.StartTurtlePrimarySkill();
                         Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTurtleVest");
@@ -426,7 +426,12 @@ namespace GunfireRebornBhaptics
 
                 //rabbit
                 case 212:
-                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillBunnyVest"); 
+                    if (!continuousPrimaryStart)
+                    {
+                        continuousPrimaryStart = true;
+                        //start effect
+                        Plugin.tactsuitVr.StartBunnyPrimarySkill();
+                    }
                     break;
 
                 default:
@@ -449,7 +454,7 @@ namespace GunfireRebornBhaptics
                 return;
             }
 
-            bhaptics_OnPrimarySkillOnDown.turtleStart = false;
+            bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart = false;
             Plugin.tactsuitVr.StopTurtlePrimarySkill();
             bhaptics_OnPrimarySkillOnDown.kasuniState=0;
             Plugin.tactsuitVr.StopFoxPrimarySkill();
@@ -470,12 +475,39 @@ namespace GunfireRebornBhaptics
                 return;
             }
 
-            if (bhaptics_OnPrimarySkillOnDown.turtleStart)
+            if (bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart)
             {
-                bhaptics_OnPrimarySkillOnDown.turtleStart = false;
+                bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart = false;
                 //stop effect
                 Plugin.tactsuitVr.StopTurtlePrimarySkill();
                 Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTurtleVest");
+            }
+        }
+    }
+
+
+    /**
+    * Stop primary skills continuous effects bunny
+    */
+    [HarmonyPatch(typeof(SkillBolt.Cartoon929200), "End")]
+    public class bhaptics_OnSkillEndBunny
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            Plugin.Log.LogMessage("CARTOON START" + bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart);
+            if (Plugin.tactsuitVr.suitDisabled || HeroAttackCtrl.HeroObj.playerProp.SID != 212)
+            {
+                return;
+            }
+
+            Plugin.Log.LogMessage("CARTOON START 2");
+            if (bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart)
+            {
+                Plugin.Log.LogMessage("CARTOON START 3");
+                bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart = false;
+                //stop effect
+                Plugin.tactsuitVr.StopBunnyPrimarySkill();
             }
         }
     }
