@@ -96,7 +96,7 @@ namespace GunfireRebornBhaptics
     /**
      * pistols and derivatives secondary shoot
      */
-    [HarmonyPatch(typeof(AttackSkillBase), "SpecialsAttackOnce")]
+    [HarmonyPatch(typeof(ASAutoShoot), "StartBulletSkill")]
     public class bhaptics_OnFireAutoShootSecondary
     {
         [HarmonyPostfix]
