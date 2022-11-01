@@ -96,7 +96,8 @@ namespace GunfireRebornBhaptics
     /**
      * pistols and derivatives secondary shoot
      */
-    [HarmonyPatch(typeof(SkillBolt.Cartoon100402), "Active")]
+    /*
+    [HarmonyPatch(typeof(SkillBolt.Cartoon900401), "Active")]
     public class bhaptics_OnFireAutoShootSecondary
     {
         [HarmonyPostfix]
@@ -112,6 +113,7 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(skill.WeaponSID));
         }
     }
+    */
 
     /**
      * Single shot weapons (snipers, some bows) arms and vest 
@@ -251,8 +253,6 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            //Plugin.Log.LogMessage("ITEMID " + __instance.ItemID);
-            //Plugin.Log.LogMessage("ITEM SID "+__instance.ItemSID);
             if (__instance.ItemSID == 1306)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
@@ -729,7 +729,8 @@ namespace GunfireRebornBhaptics
             //death
             if (playerProp.HP <= 0)
             {
-               
+                Plugin.tactsuitVr.StopChargingWeapon("L");
+                Plugin.tactsuitVr.StopChargingWeapon("R");
                 Plugin.tactsuitVr.PlaybackHaptics("Death");
                 Plugin.tactsuitVr.StopThreads();
                 Plugin.tactsuitVr.StartHeartBeat();
