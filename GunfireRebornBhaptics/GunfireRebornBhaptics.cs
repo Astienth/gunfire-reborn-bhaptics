@@ -426,7 +426,6 @@ namespace GunfireRebornBhaptics
 
                 //rabbit
                 case 212:
-                    Plugin.Log.LogMessage("BUNNY " + continuousPrimaryStart);
                     if (!continuousPrimaryStart)
                     {
                         continuousPrimaryStart = true;
@@ -490,21 +489,18 @@ namespace GunfireRebornBhaptics
     /**
     * Stop primary skills continuous effects bunny
     */
-    [HarmonyPatch(typeof(HeroMoveManager), "FixedUpdate")]
+    [HarmonyPatch(typeof(UIScript.HeroSKillLogicBase), "CommonColdDown")]
     public class bhaptics_OnSkillEndBunny
     {
         [HarmonyPostfix]
-        public static void Postfix()
+        public static void Postfix(UIScript.HeroSKillLogicBase __instance)
         {
             if (Plugin.tactsuitVr.suitDisabled || HeroAttackCtrl.HeroObj.playerProp.SID != 212)
             {
                 return;
             }
-            
-            Plugin.Log.LogMessage("SKILL "+ HeroAttackCtrl.FocusSkillID);
 
-            if (bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart
-                && !HeroAttackCtrl.IsSkillsStart())
+            if (bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart)
             {
                 bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart = false;
                 //stop effect
