@@ -96,7 +96,7 @@ namespace GunfireRebornBhaptics
     /**
      * pistols and derivatives secondary shoot
      */
-    [HarmonyPatch(typeof(ASAutoShoot), "OnDown")]
+    [HarmonyPatch(typeof(AttackSkillBase), "SpecialsAttackOnce")]
     public class bhaptics_OnFireAutoShootSecondary
     {
         [HarmonyPostfix]
@@ -106,9 +106,9 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
-            Plugin.Log.LogMessage("SECONDARY");
-            //Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
-            //Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.Log.LogMessage("SECONDARY " + __instance.ItemSID);
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
 
