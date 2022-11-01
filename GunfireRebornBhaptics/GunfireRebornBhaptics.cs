@@ -298,50 +298,6 @@ namespace GunfireRebornBhaptics
         }
     }
 
-
-    /* this method will activate haptic feedback "heartbeat" at every down press 
-     * of Right trigger only.  This will activate without exception at every down 
-     * press of right trigger including while there are no enemies present or with 
-     * enemies present and being attacked.
-    [HarmonyPatch(typeof(ASFlyswordShoot), "OnDown")]
-    public class bhaptics_OnFireFSOnDown
-    {
-        [HarmonyPostfix]
-        public static void Postfix(ASFlyswordShoot __instance)
-        {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
-            {
-                return;
-            }
-            Plugin.Log.LogMessage("Cloud Weaver FSOnDown");
-            Plugin.tactsuitVr.PlaybackHaptics("HeartBeat");
-            
-        }
-    }
-    
-
-
-    /*
-     * this method activates haptic feedback, "heal" at every "on up" or 
-     * release after pressing of buttons Y, X, and Right trigger only. 
-     * This will persistently activate, even in menus.
-    [HarmonyPatch(typeof(ASFlyswordShoot), "OnUp")]
-    public class bhaptics_OnFireFSOnUp
-    {
-        [HarmonyPostfix]
-        public static void Postfix(ASFlyswordShoot __instance)
-        {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
-            {
-                return;
-            }
-            Plugin.Log.LogMessage("Cloud Weaver FSOnUp");
-            Plugin.tactsuitVr.PlaybackHaptics("Heal");
-
-        }
-    }
-    */
-
     #endregion
 
     #region Primary skills (furies)
@@ -826,44 +782,6 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("Heal");
-        }
-    }
-
-    #endregion
-
-    #region
-
-    /**
-     * DEBUG
-     */
-    [HarmonyPatch(typeof(Bhaptics.Tact.HapticPlayer), "TurnOff", new Type[] { typeof(string) })]
-    public class bhaptics_OnDebug
-    {
-        [HarmonyPostfix]
-        public static void Postfix(Bhaptics.Tact.HapticPlayer __instance)
-        {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
-            {
-                return;
-            }
-
-            /**
-            PlayerProp playerProp = NewObjectCache.GetPlayerProp(HeroBeHitCtrl.HeroID);
-
-            Plugin.Log.LogMessage(" SHIELD MAX " + playerProp.ShieldMax);
-            Plugin.Log.LogMessage(" NAME " + playerProp.Name);
-            Plugin.Log.LogMessage(" HP " + playerProp.HP);
-            Plugin.Log.LogMessage(" HPMAX " + playerProp.HPMax);
-            Plugin.Log.LogMessage(" ARMOR " + playerProp.Armor);
-            Plugin.Log.LogMessage(" ARMORMAX " + playerProp.ArmorMax);
-            Plugin.Log.LogMessage(" SHield " + playerProp.Shield);
-            Plugin.Log.LogMessage(" STATUS " + playerProp.ShieldStatus);
-            Plugin.Log.LogMessage(" BREAK TIMER " + HeroBeHitCtrl.breakTimer);
-            */
-
-            Plugin.Log.LogMessage(
-                string.Join(" ",
-                string.Join(" ", Traverse.Create(__instance).Field("_activeKeys").GetValue())));
         }
     }
 
