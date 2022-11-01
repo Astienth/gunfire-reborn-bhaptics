@@ -388,7 +388,7 @@ namespace GunfireRebornBhaptics
 
                 //tiger
                 case 207:
-                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTigerVest");
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTigerVest", true, 1.5f);
                     Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTigerArms");
                     break;
 
@@ -426,6 +426,7 @@ namespace GunfireRebornBhaptics
 
                 //rabbit
                 case 212:
+                    Plugin.Log.LogMessage("BUNNY " + continuousPrimaryStart);
                     if (!continuousPrimaryStart)
                     {
                         continuousPrimaryStart = true;
@@ -489,22 +490,22 @@ namespace GunfireRebornBhaptics
     /**
     * Stop primary skills continuous effects bunny
     */
-    [HarmonyPatch(typeof(SkillBolt.Cartoon929200), "End")]
+    [HarmonyPatch(typeof(HeroMoveManager), "FixedUpdate")]
     public class bhaptics_OnSkillEndBunny
     {
         [HarmonyPostfix]
         public static void Postfix()
         {
-            Plugin.Log.LogMessage("CARTOON START" + bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart);
             if (Plugin.tactsuitVr.suitDisabled || HeroAttackCtrl.HeroObj.playerProp.SID != 212)
             {
                 return;
             }
+            
+            Plugin.Log.LogMessage("SKILL "+ HeroAttackCtrl.FocusSkillID);
 
-            Plugin.Log.LogMessage("CARTOON START 2");
-            if (bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart)
+            if (bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart
+                && !HeroAttackCtrl.IsSkillsStart())
             {
-                Plugin.Log.LogMessage("CARTOON START 3");
                 bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart = false;
                 //stop effect
                 Plugin.tactsuitVr.StopBunnyPrimarySkill();
