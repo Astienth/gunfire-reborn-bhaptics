@@ -388,7 +388,7 @@ namespace GunfireRebornBhaptics
 
                 //tiger
                 case 207:
-                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTigerVest", true, 1.5f);
+                    Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTigerVest", true, 4.0f);
                     Plugin.tactsuitVr.PlaybackHaptics("PrimarySkillTigerArms");
                     break;
 
