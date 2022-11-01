@@ -308,8 +308,8 @@ namespace MyBhapticsTactsuit
             {
                 // Check if reset event is active
                 bunnyPrimarySkill_mrse.WaitOne();
-                PlaybackHaptics("PrimarySkillBunnyVest");
-                Thread.Sleep(1000);
+                PlaybackHaptics("PrimarySkillBunnyVest", true);
+                Thread.Sleep(600);
             }
         }
 
