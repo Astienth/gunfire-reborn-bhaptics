@@ -96,20 +96,20 @@ namespace GunfireRebornBhaptics
     /**
      * pistols and derivatives secondary shoot
      */
-    [HarmonyPatch(typeof(ASAutoShoot), "OnDown")]
+    [HarmonyPatch(typeof(SkillBolt.Cartoon100402), "Active")]
     public class bhaptics_OnFireAutoShootSecondary
     {
         [HarmonyPostfix]
-        public static void Postfix(ASAutoShoot __instance)
+        public static void Postfix(SkillBolt.Cartoon100402 __instance, SkillBolt.CSkillBase skill)
         {
             if (Plugin.tactsuitVr.suitDisabled || __instance == null)
             {
                 return;
             }
-            Plugin.Log.LogMessage("SECONDARY " + __instance.ItemSID + " "+ __instance.IsHandAttack
-                + " " + __instance.ItemID + " "+ __instance.PerformSID);
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(__instance.ItemID));
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
+            Plugin.Log.LogMessage("CARTOON " + skill.AttID+" "+skill.SkillID+" "+skill.SkillPerformMsg
+                +" "+skill.WeaponSID);
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(skill.WeaponSID));
+            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(skill.WeaponSID));
         }
     }
 
