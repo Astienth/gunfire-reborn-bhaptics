@@ -380,18 +380,21 @@ namespace MyBhapticsTactsuit
             }
         }
 
-        public void StopThreads()
+        public void StopThreads(bool continuousOnly = false)
         {
-            StopHeartBeat();
             ChargingWeaponL_mrse.Reset();
             ChargingWeaponR_mrse.Reset();
             ContinueWeaponL_mrse.Reset();
             ContinueWeaponR_mrse.Reset();
             CloudWeaverR_mrse.Reset();
             CloudWeaverL_mrse.Reset();
-            turtlePrimarySkill_mrse.Reset();
-            foxPrimarySkill_mrse.Reset();
-            bunnyPrimarySkill_mrse.Reset();
+            if (!continuousOnly)
+            {
+                StopHeartBeat();
+                turtlePrimarySkill_mrse.Reset();
+                foxPrimarySkill_mrse.Reset();
+                bunnyPrimarySkill_mrse.Reset();
+            }
         }
 
 

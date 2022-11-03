@@ -329,6 +329,7 @@ namespace GunfireRebornBhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("WeaponSwapArm_R");
+            Plugin.tactsuitVr.StopThreads(true);
         }
     }
     #endregion
