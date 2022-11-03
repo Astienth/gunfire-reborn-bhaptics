@@ -483,7 +483,7 @@ namespace GunfireRebornBhaptics
             }
             if (HeroAttackCtrl.HeroObj.playerProp.SID == 201)
             {
-                Plugin.tactsuitVr.StopContinueWeapon("L");
+                Plugin.tactsuitVr.StopChargingWeapon("L");
             }
         }
     }
