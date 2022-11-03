@@ -38,6 +38,7 @@ namespace GunfireRebornBhaptics
             // patch all functions
             var harmony = new Harmony("bhaptics.patch.GunfireRebornBhaptics");
             harmony.PatchAll();
+            Plugin.tactsuitVr.StopThreads();
         }
 
         public static string getHandSide(int weaponId)
