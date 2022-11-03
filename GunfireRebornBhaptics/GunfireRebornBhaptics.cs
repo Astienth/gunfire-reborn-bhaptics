@@ -317,7 +317,20 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
-
+        
+    [HarmonyPatch(typeof(HeroAttackCtrl), "OnSwitchWeapon")]
+    public class bhaptics_OnSwitchWeapon
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.PlaybackHaptics("WeaponSwapArm_R");
+        }
+    }
     #endregion
 
     #region Primary skills (furies)
