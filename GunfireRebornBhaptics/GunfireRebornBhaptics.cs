@@ -95,28 +95,6 @@ namespace GunfireRebornBhaptics
     }
 
     /**
-     * pistols and derivatives secondary shoot
-     */
-    /*
-    [HarmonyPatch(typeof(SkillBolt.Cartoon900401), "Active")]
-    public class bhaptics_OnFireAutoShootSecondary
-    {
-        [HarmonyPostfix]
-        public static void Postfix(SkillBolt.Cartoon100402 __instance, SkillBolt.CSkillBase skill)
-        {
-            if (Plugin.tactsuitVr.suitDisabled || __instance == null)
-            {
-                return;
-            }
-            Plugin.Log.LogMessage("CARTOON " + skill.AttID+" "+skill.SkillID+" "+skill.SkillPerformMsg
-                +" "+skill.WeaponSID);
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_" + Plugin.getHandSide(skill.WeaponSID));
-            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(skill.WeaponSID));
-        }
-    }
-    */
-
-    /**
      * Single shot weapons (snipers, some bows) arms and vest 
      */
     [HarmonyPatch(typeof(ASSingleShoot), "AttackOnce")]
@@ -318,7 +296,10 @@ namespace GunfireRebornBhaptics
             Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_" + Plugin.getHandSide(__instance.ItemID));
         }
     }
-        
+    
+    /**
+     * On switching weapons
+     */
     [HarmonyPatch(typeof(HeroAttackCtrl), "OnSwitchWeapon")]
     public class bhaptics_OnSwitchWeapon
     {
@@ -329,6 +310,7 @@ namespace GunfireRebornBhaptics
             {
                 return;
             }
+            
             Plugin.tactsuitVr.PlaybackHaptics("WeaponSwapArm_R");
             Plugin.tactsuitVr.StopThreads(true);
         }
@@ -486,16 +468,22 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix(UIScript.HeroSKillLogicBase __instance)
         {
-            if (Plugin.tactsuitVr.suitDisabled || HeroAttackCtrl.HeroObj.playerProp.SID != 212)
+            if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
             }
-
-            if (bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart)
+            if (HeroAttackCtrl.HeroObj.playerProp.SID == 212)
             {
-                bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart = false;
-                //stop effect
-                Plugin.tactsuitVr.StopBunnyPrimarySkill();
+                if (bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart)
+                {
+                    bhaptics_OnPrimarySkillOnDown.continuousPrimaryStart = false;
+                    //stop effect
+                    Plugin.tactsuitVr.StopBunnyPrimarySkill();
+                }
+            }
+            if (HeroAttackCtrl.HeroObj.playerProp.SID == 201)
+            {
+                Plugin.tactsuitVr.StopContinueWeapon("L");
             }
         }
     }
