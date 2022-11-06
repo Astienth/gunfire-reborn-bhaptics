@@ -810,5 +810,26 @@ namespace GunfireRebornBhaptics
     }
 
     #endregion
+
+    #region bug fixes
+
+    /**
+     * When defeating boss, stop all continuous haptics
+     */
+    [HarmonyPatch(typeof(UIScript.EffectPanel_logic), "DefeatBoss")]
+    public class bhaptics_OnBossDefeat
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+            Plugin.tactsuitVr.StopThreads();
+        }
+    }
+
+    #endregion
 }
 
