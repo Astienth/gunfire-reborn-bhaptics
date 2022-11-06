@@ -15,26 +15,27 @@ namespace MyBhapticsTactsuit
         public bool suitDisabled = true;
         public bool systemInitialized = false;
         // Event to start and stop the heartbeat thread
-        private static ManualResetEvent HeartBeat_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent HeartBeat_mrse = new ManualResetEvent(false); 
+        private static ManualResetEvent ChargingWeaponR_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent ChargingWeaponL_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent ContinueWeaponR_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent ContinueWeaponL_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent CloudWeaverR_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent CloudWeaverL_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent turtlePrimarySkill_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent foxPrimarySkill_mrse = new ManualResetEvent(false);
+        private static ManualResetEvent bunnyPrimarySkill_mrse = new ManualResetEvent(false);
+
         // dictionary of all feedback patterns found in the bHaptics directory
         public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
+
+        public static bool heartbeatStarted = false;
 
 #pragma warning disable CS0618 // remove warning that the C# library is deprecated
         public HapticPlayer hapticPlayer;
 #pragma warning restore CS0618 
 
         private static RotationOption defaultRotationOption = new RotationOption(0.0f, 0.0f);
-
-        public void HeartBeatFunc()
-        {
-            while (true)
-            {
-                // Check if reset event is active
-                HeartBeat_mrse.WaitOne();
-                PlaybackHaptics("HeartBeat");
-                Thread.Sleep(1000);
-            }
-        }
 
         public TactsuitVR()
         {
@@ -52,6 +53,24 @@ namespace MyBhapticsTactsuit
             LOG("Starting HeartBeat thread...");
             Thread HeartBeatThread = new Thread(HeartBeatFunc);
             HeartBeatThread.Start();
+            Thread ChargingWeaponRThread = new Thread(ChargingWeaponR);
+            ChargingWeaponRThread.Start();
+            Thread ChargingWeaponLThread = new Thread(ChargingWeaponL);
+            ChargingWeaponLThread.Start();
+            Thread ContinueWeaponRThread = new Thread(ContinueWeaponR);
+            ContinueWeaponRThread.Start();
+            Thread ContinueWeaponLThread = new Thread(ContinueWeaponL);
+            ContinueWeaponLThread.Start();
+            Thread CloudWeaverRThread = new Thread(CloudWeaverR);
+            CloudWeaverRThread.Start();
+            Thread CloudWeaverLThread = new Thread(CloudWeaverR);
+            CloudWeaverLThread.Start();
+            Thread turtlePrimarySkillThread = new Thread(turtlePrimarySkill);
+            turtlePrimarySkillThread.Start();
+            Thread foxPrimarySkillThread = new Thread(foxPrimarySkill);
+            foxPrimarySkillThread.Start(); 
+            Thread bunnyPrimarySkillThread = new Thread(bunnyPrimarySkill);
+            bunnyPrimarySkillThread.Start();
         }
 
         public void LOG(string logStr)
@@ -96,7 +115,7 @@ namespace MyBhapticsTactsuit
             if (FeedbackMap.ContainsKey(key))
             {
                 ScaleOption scaleOption = new ScaleOption(intensity, duration);
-                if (hapticPlayer.IsPlaying() && !forced)
+                if (hapticPlayer.IsPlaying(key) && !forced)
                 {
                     return;
                 }
@@ -111,65 +130,240 @@ namespace MyBhapticsTactsuit
             }
         }
 
-        public void PlayBackHit(String key, float xzAngle, float yShift)
+        public void HeartBeatFunc()
         {
-            // two parameters can be given to the pattern to move it on the vest:
-            // 1. An angle in degrees [0, 360] to turn the pattern to the left
-            // 2. A shift [-0.5, 0.5] in y-direction (up and down) to move it up or down
-            if (suitDisabled) { return; }
-            ScaleOption scaleOption = new ScaleOption(1f, 1f);
-            RotationOption rotationOption = new RotationOption(xzAngle, yShift);
-            hapticPlayer.SubmitRegisteredVestRotation(key, key, rotationOption, scaleOption);
-        }
-
-        public static KeyValuePair<float, float> getAngleAndShift(Transform player, Vector3 hit)
-        {
-            // bhaptics pattern starts in the front, then rotates to the left. 0° is front, 90° is left, 270° is right.
-            // y is "up", z is "forward" in local coordinates
-            Vector3 patternOrigin = new Vector3(0f, 0f, 1f);
-            Vector3 hitPosition = hit - player.position;
-            Quaternion myPlayerRotation = player.rotation;
-            Vector3 playerDir = myPlayerRotation.eulerAngles;
-            // get rid of the up/down component to analyze xz-rotation
-            Vector3 flattenedHit = new Vector3(hitPosition.x, 0f, hitPosition.z);
-
-            // get angle. .Net < 4.0 does not have a "SignedAngle" function...
-            float hitAngle = Vector3.Angle(flattenedHit, patternOrigin);
-            // check if cross product points up or down, to make signed angle myself
-            Vector3 crossProduct = Vector3.Cross(flattenedHit, patternOrigin);
-            if (crossProduct.y < 0f) { hitAngle *= -1f; }
-            // relative to player direction
-            float myRotation = hitAngle - playerDir.y;
-            // switch directions (bhaptics angles are in mathematically negative direction)
-            myRotation *= -1f;
-            // convert signed angle into [0, 360] rotation
-            if (myRotation < 0f) { myRotation = 360f + myRotation; }
-
-
-            // up/down shift is in y-direction
-            // in Battle Sister, the torso Transform has y=0 at the neck,
-            // and the torso ends at roughly -0.5 (that's in meters)
-            // so cap the shift to [-0.5, 0]...
-            float hitShift = hitPosition.y;
-            float upperBound = -4.5f;
-            float lowerBound = -5.5f;
-            if (hitShift > upperBound) { hitShift = 0.5f; }
-            else if (hitShift < lowerBound) { hitShift = -0.5f; }
-            // ...and then spread/shift it to [-0.5, 0.5], which is how bhaptics expects it
-            else { hitShift = (hitShift - lowerBound) / (upperBound - lowerBound) - 0.5f; }
-
-            // No tuple returns available in .NET < 4.0, so this is the easiest quickfix
-            return new KeyValuePair<float, float>(myRotation, hitShift);
+            while (true)
+            {
+                // Check if reset event is active
+                HeartBeat_mrse.WaitOne();
+                PlaybackHaptics("HeartBeat", false, 1.5f);
+                Thread.Sleep(1000);
+            }
         }
 
         public void StartHeartBeat()
         {
-            HeartBeat_mrse.Set();
+            if (!heartbeatStarted)
+            {
+                heartbeatStarted = true;
+                HeartBeat_mrse.Set();
+            }
         }
 
         public void StopHeartBeat()
         {
+            heartbeatStarted = false;
             HeartBeat_mrse.Reset();
+        }
+
+        // CLOUD WEAVER WEAPON
+        public void CloudWeaverR()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                CloudWeaverR_mrse.WaitOne();
+                PlaybackHaptics("FlySwordVest_R");
+                PlaybackHaptics("FlySwordArmRWristSpinning_R");
+                Thread.Sleep(1000);
+            }
+        }
+        public void CloudWeaverL()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                CloudWeaverR_mrse.WaitOne();
+                PlaybackHaptics("FlySwordVest_L");
+                PlaybackHaptics("FlySwordArmRWristSpinning_L");
+                Thread.Sleep(1000);
+            }
+        }
+
+        public void StartCloudWeaver(string side = "R")
+        {
+            if (side == "R")
+            {
+                CloudWeaverR_mrse.Set();
+            }
+            else
+            {
+                CloudWeaverL_mrse.Set();
+            }
+        }
+
+        public void StopCloudWeaver(string side = "R")
+        {
+            if (side == "R")
+            {
+                CloudWeaverR_mrse.Reset();
+            }
+            else
+            {
+                CloudWeaverL_mrse.Reset();
+            }
+        }
+
+        //CHARGING WEAPONS FUNCTIONS
+        public void ChargingWeaponR()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                ChargingWeaponR_mrse.WaitOne();
+                PlaybackHaptics("ChargedShotVest_R" , true, 0.3f);
+                PlaybackHaptics("ChargedShotArm_R" , true, 0.4f);
+                Thread.Sleep(1000); 
+            }
+        }
+
+        public void ChargingWeaponL()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                ChargingWeaponL_mrse.WaitOne();
+                PlaybackHaptics("ChargedShotVest_L", true, 0.3f);
+                PlaybackHaptics("ChargedShotArm_L", true, 0.4f);
+                Thread.Sleep(1000);
+            }
+        }
+
+        public void StartChargingWeapon(string side = "R")
+        {
+            if (side == "R")
+            {
+                ChargingWeaponR_mrse.Set();
+            }
+            else
+            {
+                ChargingWeaponL_mrse.Set();
+            }
+        }
+
+        public void StopChargingWeapon(string side = "R")
+        {
+            if (side == "R")
+            {
+                ChargingWeaponR_mrse.Reset();
+            }
+            else
+            {
+                ChargingWeaponL_mrse.Reset();
+            }
+        }
+
+        // CONTINUOUS WEAPONS FUNCTIONS
+        public void ContinueWeaponR()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                ContinueWeaponR_mrse.WaitOne();
+                PlaybackHaptics("ContinuousVest_R");
+                PlaybackHaptics("ContinuousArm_R");
+                Thread.Sleep(400);
+            }
+        }
+
+        public void ContinueWeaponL()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                ContinueWeaponL_mrse.WaitOne();
+                PlaybackHaptics("ContinuousVest_L");
+                PlaybackHaptics("ContinuousArm_L");
+                Thread.Sleep(400);
+            }
+        }
+
+        public void StartContinueWeapon(string side = "R")
+        {
+            if (side == "R")
+            {
+                ContinueWeaponR_mrse.Set();
+            }
+            else
+            {
+                ContinueWeaponL_mrse.Set();
+            }
+        }
+
+        public void StopContinueWeapon(string side = "R")
+        {
+            if (side == "R")
+            {
+                ContinueWeaponR_mrse.Reset();
+            }
+            else
+            {
+                ContinueWeaponL_mrse.Reset();
+            }
+        }
+
+        public void bunnyPrimarySkill()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                bunnyPrimarySkill_mrse.WaitOne();
+                PlaybackHaptics("PrimarySkillBunnyVest", true);
+                Thread.Sleep(600);
+            }
+        }
+
+        public void StartBunnyPrimarySkill()
+        {
+            bunnyPrimarySkill_mrse.Set();
+        }
+
+        public void StopBunnyPrimarySkill()
+        {
+            bunnyPrimarySkill_mrse.Reset();
+        }
+        
+        public void turtlePrimarySkill()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                turtlePrimarySkill_mrse.WaitOne();
+                PlaybackHaptics("PrimarySkillTurtleArm_R");
+                Thread.Sleep(1000);
+            }
+        }
+
+        public void StartTurtlePrimarySkill()
+        {
+            turtlePrimarySkill_mrse.Set();
+        }
+
+        public void StopTurtlePrimarySkill()
+        {
+            turtlePrimarySkill_mrse.Reset();
+        }
+
+        public void foxPrimarySkill()
+        {
+            while (true)
+            {
+                // Check if reset event is active
+                foxPrimarySkill_mrse.WaitOne();
+                PlaybackHaptics("PrimarySkillFoxVest");
+                PlaybackHaptics("PrimarySkillFoxArms_");
+                Thread.Sleep(500);
+            }
+        }
+
+        public void StartFoxPrimarySkill()
+        {
+            foxPrimarySkill_mrse.Set();
+        }
+
+        public void StopFoxPrimarySkill()
+        {
+            foxPrimarySkill_mrse.Reset();
         }
 
         public void StopHapticFeedback(String effect)
@@ -186,9 +380,21 @@ namespace MyBhapticsTactsuit
             }
         }
 
-        public void StopThreads()
+        public void StopThreads(bool continuousOnly = false)
         {
-            StopHeartBeat();
+            ChargingWeaponL_mrse.Reset();
+            ChargingWeaponR_mrse.Reset();
+            ContinueWeaponL_mrse.Reset();
+            ContinueWeaponR_mrse.Reset();
+            CloudWeaverR_mrse.Reset();
+            CloudWeaverL_mrse.Reset();
+            if (!continuousOnly)
+            {
+                StopHeartBeat();
+                turtlePrimarySkill_mrse.Reset();
+                foxPrimarySkill_mrse.Reset();
+                bunnyPrimarySkill_mrse.Reset();
+            }
         }
 
 
