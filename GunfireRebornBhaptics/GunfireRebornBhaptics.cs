@@ -331,7 +331,7 @@ namespace GunfireRebornBhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (Plugin.tactsuitVr.suitDisabled || HeroAttackCtrl.CanFireButtonStartCharging)
+            if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
             }
